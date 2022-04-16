@@ -1,0 +1,66 @@
+@startuml "Sequence"
+
+User -> WebApp : List documents
+activate WebApp
+WebApp -> API : Query documents
+activate API
+return Documents
+return
+
+User -> WebApp : Reject document
+activate WebApp
+WebApp -> API : Reject document
+activate API
+return OK
+return
+
+User -> WebApp : Approve document
+activate WebApp
+WebApp -> API : Approve document
+activate API
+return OK
+WebApp -> WebApp : Forward to e-mail
+activate WebApp
+deactivate WebApp
+return
+
+@enduml
+
+@startuml "Classes"
+hide enum methods
+
+class User {
+    string Name
+}
+
+class Document {
+    Guid Id
+    DocumentType DocumentType
+    State DocumentState
+    DateTime CreationDate
+    string FileReference
+}
+
+class DocumentState {
+    DateTime Timestamp
+    State State
+}
+
+enum DocumentType {
+    Invoice
+    CreditNote
+}
+
+enum State {
+    Received
+    Approved
+    Rejected
+}
+
+User "1" o-- "*" Document
+Document *-- DocumentType
+Document *-- State
+Document "1" *-- "*" DocumentState
+DocumentState *-- State
+
+@enduml

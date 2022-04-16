@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SproomInbox.API", "SproomInbox.API\SproomInbox.API.csproj", "{A980C29E-D995-41E8-A676-8FA98E0EBCE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApp", "WebApp", "{3A6A5920-A020-42E6-84ED-067F3261AA0C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SproomInbox.WebApp.Server", "SproomInbox.WebApp\Server\SproomInbox.WebApp.Server.csproj", "{B1724740-7CCF-4703-8F48-7F91CE89F456}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SproomInbox.WebApp.Client", "SproomInbox.WebApp\Client\SproomInbox.WebApp.Client.csproj", "{27B8020F-9DA0-4A10-811D-2122B0F7132C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SproomInbox.WebApp.Shared", "SproomInbox.WebApp\Shared\SproomInbox.WebApp.Shared.csproj", "{5BAEBB67-BBBB-4C38-B7EC-2CF423776CA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3531FCBA-3DC1-45F5-8B4A-06218E05297C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A980C29E-D995-41E8-A676-8FA98E0EBCE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A980C29E-D995-41E8-A676-8FA98E0EBCE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A980C29E-D995-41E8-A676-8FA98E0EBCE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A980C29E-D995-41E8-A676-8FA98E0EBCE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1724740-7CCF-4703-8F48-7F91CE89F456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1724740-7CCF-4703-8F48-7F91CE89F456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1724740-7CCF-4703-8F48-7F91CE89F456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1724740-7CCF-4703-8F48-7F91CE89F456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27B8020F-9DA0-4A10-811D-2122B0F7132C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27B8020F-9DA0-4A10-811D-2122B0F7132C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27B8020F-9DA0-4A10-811D-2122B0F7132C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27B8020F-9DA0-4A10-811D-2122B0F7132C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BAEBB67-BBBB-4C38-B7EC-2CF423776CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BAEBB67-BBBB-4C38-B7EC-2CF423776CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BAEBB67-BBBB-4C38-B7EC-2CF423776CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BAEBB67-BBBB-4C38-B7EC-2CF423776CA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B1724740-7CCF-4703-8F48-7F91CE89F456} = {3A6A5920-A020-42E6-84ED-067F3261AA0C}
+		{27B8020F-9DA0-4A10-811D-2122B0F7132C} = {3A6A5920-A020-42E6-84ED-067F3261AA0C}
+		{5BAEBB67-BBBB-4C38-B7EC-2CF423776CA8} = {3A6A5920-A020-42E6-84ED-067F3261AA0C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DE2D8065-E4CE-4D42-9B7F-3CD168D33A92}
+	EndGlobalSection
+EndGlobal
