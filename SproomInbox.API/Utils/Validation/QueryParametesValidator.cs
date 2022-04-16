@@ -4,7 +4,7 @@ using SproomInbox.API.Utils.Parametrization;
 
 namespace RentalAPI.ValidationFilters
 {
-    public class QueryParametesValidator: AbstractValidator<QueryParameters>
+    public class QueryParametesValidator: AbstractValidator<DocumentsQueryParameters>
     {
         public QueryParametesValidator()
         {

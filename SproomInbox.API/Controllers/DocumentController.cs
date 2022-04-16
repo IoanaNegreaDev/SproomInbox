@@ -35,11 +35,56 @@ namespace SproomInbox.API
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments([FromQuery] QueryParameters queryParameters)
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(
+                                                                    [FromQuery] DocumentsQueryParameters queryParameters)
         {
             var documentsPagedList = await _documentsService.ListDocumentsAsync(queryParameters);
             var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(documentsPagedList);
             return Ok(documentsDtoPagedList);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById(string id, string userName)
+        {
+            if (!Guid.TryParse(id, out var documentId))
+                return BadRequest("Invalid Id value.");
+
+            DocumentsFindByIdParameters findByIdParameters = new DocumentsFindByIdParameters()
+            {
+                Id = documentId,
+                UserName = userName
+            };
+
+            var document = await _documentsService.FindByIdAsync(findByIdParameters);
+            if (document == null)
+                return NotFound();
+
+            var documentDto = _mapper.Map<Document, DocumentDto>(document);
+
+            return Ok(documentDto);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById(
+                                                              string id, string userName,
+                                                              string newState)
+        {
+            if (!Guid.TryParse(id, out var documentId))
+                return BadRequest("Invalid Id value.");
+
+            DocumentsFindByIdParameters findByIdParameters = new DocumentsFindByIdParameters()
+            {
+                Id = documentId,
+                UserName = userName
+            };
+
+            var document = await _documentsService.UpdateAsync(findByIdParameters, newState);
+            
+            if (document == null)
+                return NotFound();
+
+            var documentDto = _mapper.Map<Document, DocumentDto>(document);
+            return Ok(documentDto);
         }
     }
 }

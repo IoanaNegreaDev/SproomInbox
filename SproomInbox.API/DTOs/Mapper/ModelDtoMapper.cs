@@ -2,6 +2,7 @@
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Utils.Extensions;
 using SproomInbox.API.Utils.Paging;
+using SproomInbox.API.Utils.Parametrization;
 
 namespace SproomInbox.API.DTOs.Mapper
 {
@@ -21,7 +22,7 @@ namespace SproomInbox.API.DTOs.Mapper
                   .ForMember(dest => dest.State,
                              opt => opt.MapFrom(src => src.StateId.ToDescriptionString()));
    
-            CreateMap(typeof(PagedList<Document>), typeof(PagedList<DocumentDto>)).ConvertUsing(typeof(PagedListMapper<Document, DocumentDto>));  
+            CreateMap(typeof(PagedList<Document>), typeof(PagedList<DocumentDto>)).ConvertUsing(typeof(PagedListMapper<Document, DocumentDto>));
         }  
     }
 }

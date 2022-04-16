@@ -19,7 +19,9 @@ IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 builder.Services.AddScoped<IDocumentsRepository, DocumentsRepository>();
+builder.Services.AddScoped<IDocumentStateRepository, DocumentStateRepository>();
 builder.Services.AddScoped<IDocumentsService, DocumentsService>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson()

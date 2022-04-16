@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SproomInbox.API.Domain.Models;
-using SproomInbox.API.Utils.Extensions;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Parametrization;
-using System.Globalization;
 
 namespace SproomInbox.API.Domain.Repositories
 {
@@ -25,11 +23,11 @@ namespace SproomInbox.API.Domain.Repositories
         {
             PagedListMetadata defaultPagingMetadata = new PagedListMetadata();
             var collection = _table as IQueryable<Document>;
-
+            collection = collection.Include(document => document.StateHistory);
             return await PagedList<Document>.Create(collection, defaultPagingMetadata);
         }
 
-        public async Task<PagedList<Document>> ListAsync(QueryParameters queryParameters)
+        public async Task<PagedList<Document>> ListAsync(DocumentsQueryParameters queryParameters)
         {
             if (queryParameters == null)
                 return await ListAsync();
@@ -76,7 +74,16 @@ namespace SproomInbox.API.Domain.Repositories
                                                           document.CreationDate.ToString().ToLower().Contains(lowerCaseSearchString));
             }
 
+            collection = collection.Include(document => document.StateHistory);
+
             return await PagedList<Document>.Create(collection, queryParameters.Paging);
         }
-    }
+
+        public async Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters)
+          => await _table.Where(document => document.Id == findParameters.Id &&
+                                            document.User.UserName == findParameters.UserName)
+                        .FirstOrDefaultAsync();
+        public void Update(Document document)
+            => _table.Update(document);
+      }
 }

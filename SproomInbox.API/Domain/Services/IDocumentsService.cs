@@ -6,6 +6,8 @@ namespace SproomInbox.API.Domain.Services
 {
     public interface IDocumentsService
     {
-        Task<PagedList<Document>> ListDocumentsAsync(QueryParameters queryParameters);
+        Task<PagedList<Document>> ListDocumentsAsync(DocumentsQueryParameters queryParameters);
+        Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters);
+        Task<Document> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState);
     }
 }

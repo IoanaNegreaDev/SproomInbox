@@ -9,7 +9,6 @@ namespace SproomInbox.API.Domain.Models
         [Key]
         public int Id { get; set; }
         public Guid DocumentId { get; set; }
-        [Column(TypeName = "datetime")]
         public DateTime Timestamp { get; set; }
         public State StateId { get; set; }
 
