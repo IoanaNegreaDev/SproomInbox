@@ -15,15 +15,25 @@ namespace RentalAPI.ValidationFilters
 
             RuleFor(param => param.State).Must(state =>
                                                 string.IsNullOrEmpty(state) ||
-                                                Enum.TryParse<State>(state, true, out var stateId) == true)
+                                                (int.TryParse(state, out _) == false && 
+                                                 Enum.TryParse<State>(state, true, out var stateId) &&
+                                                 Enum.IsDefined<State>(stateId)))
                                          .WithMessage("Invalid State value. Please use: " +
                                                        String.Join(", ", Enum.GetNames<State>()) + ".");
             
             RuleFor(param => param.Type).Must(type => 
                                                  string.IsNullOrEmpty(type) ||
-                                                 Enum.TryParse<DocumentType>(type, true, out var typeId) == true)
+                                                (int.TryParse(type, out _) == false && 
+                                                 Enum.TryParse<DocumentType>(type, true, out var typeId) &&
+                                                 Enum.IsDefined<DocumentType>(typeId)))
                                           .WithMessage("Invalid Document Type value. Please use: " +
                                                        String.Join(", ", Enum.GetNames<DocumentType>()) + ".");
+
+            RuleFor(param => param.Paging.CurrentPage).GreaterThan(0)
+                                                      .WithMessage("Current page must be grater than 0.");
+
+            RuleFor(param => param.Paging.PageSize).GreaterThan(0)
+                                                   .LessThanOrEqualTo(30);
         }
     }
 }
