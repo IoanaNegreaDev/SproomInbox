@@ -5,7 +5,7 @@ namespace SproomInbox.API.Domain.Repositories
 {
     public class DocumentStateRepository : IDocumentStateRepository
     {
-        protected DbSet<DocumentState> _table = null;
+        protected DbSet<DocumentState> _table;
         protected readonly SproomDocumentsDbContext _context;
 
         public DocumentStateRepository(SproomDocumentsDbContext context)

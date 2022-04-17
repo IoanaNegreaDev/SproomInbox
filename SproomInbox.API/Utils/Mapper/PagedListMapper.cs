@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SproomInbox.API.Utils.Paging;
 
-namespace SproomInbox.API.DTOs.Mapper
+namespace SproomInbox.API.Utils.Mapper
 {
     public class PagedListMapper<TSource, TDestination> : ITypeConverter<PagedList<TSource>, PagedList<TDestination>>
     {

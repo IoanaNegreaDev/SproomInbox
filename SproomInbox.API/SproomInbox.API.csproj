@@ -32,4 +32,8 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SproomInbox.WebApp\Shared\SproomInbox.WebApp.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

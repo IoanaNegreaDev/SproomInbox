@@ -44,7 +44,7 @@ namespace SproomInbox.API.Domain.Services
 
                 dbDocument.StateId = newStateId;
                 _unitOfWork.DocumentRepository.Update(dbDocument);
-                _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
+                await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
                 _unitOfWork.SaveChanges();
             }
 

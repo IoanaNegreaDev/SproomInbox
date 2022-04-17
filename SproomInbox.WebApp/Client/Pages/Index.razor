@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using SproomInbox.WebApp.Shared
+@using SproomInbox.WebApp.Shared.Resources
 @inject HttpClient Http
 
 <PageTitle>Sproom Inbox</PageTitle>
@@ -32,10 +32,12 @@ else {
 }
 
 @code {
-    private IList<Document>? documents;
+    private IList<DocumentDto>? documents;
 
     protected override async Task OnInitializedAsync()
     {
-        documents = await Http.GetFromJsonAsync<IList<Document>>("Document");
+  
+        
+        documents = await Http.GetFromJsonAsync<IList<DocumentDto>>("https://localhost:5001/api/v1.0/documents/?username=TheOne");
     }
 }

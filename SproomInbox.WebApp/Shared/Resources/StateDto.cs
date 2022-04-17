@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace SproomInbox.API.Domain.Models
+namespace SproomInbox.WebApp.Shared.Resources
 {
-    public enum State : byte
+    public enum StateDto : byte
     {
         [Description("Received")]
         Received = 1,

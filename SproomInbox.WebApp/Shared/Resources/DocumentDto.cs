@@ -1,4 +1,4 @@
-﻿namespace SproomInbox.API.DTOs
+﻿namespace SproomInbox.WebApp.Shared.Resources
 {
     public class DocumentDto
     {
@@ -6,7 +6,7 @@
         {
             StateHistory = new HashSet<DocumentStateDto>();
         }
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Type { get; set; }
         public string State { get; set; }
         public DateTime CreationDate { get; set; }

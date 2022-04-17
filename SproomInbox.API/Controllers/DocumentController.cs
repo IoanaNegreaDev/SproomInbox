@@ -2,14 +2,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
-using SproomInbox.API.DTOs;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Parametrization;
+using SproomInbox.WebApp.Shared.Resources;
 
 namespace SproomInbox.API
 {
     [ApiController]
-    [Route("api/documents")]
+    [Route("api/v1.0/documents")]
     public class DocumentController : ControllerBase
     {
         private readonly ILogger<DocumentController> _logger;

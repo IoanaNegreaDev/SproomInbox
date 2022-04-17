@@ -1,4 +1,4 @@
-﻿namespace SproomInbox.API.DTOs
+﻿namespace SproomInbox.WebApp.Shared.Resources
 {
     public class DocumentStateDto
     {

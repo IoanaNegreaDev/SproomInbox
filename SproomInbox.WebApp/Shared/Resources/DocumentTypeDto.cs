@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace SproomInbox.API.Domain.Models
+namespace SproomInbox.WebApp.Shared.Resources
 {
-    public enum DocumentType : byte
+    public enum DocumentTypeDto : byte
     {
         [Description("Invoice")]
         Invoice = 1,

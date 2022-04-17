@@ -2,9 +2,9 @@
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Utils.Extensions;
 using SproomInbox.API.Utils.Paging;
-using SproomInbox.API.Utils.Parametrization;
+using SproomInbox.WebApp.Shared.Resources;
 
-namespace SproomInbox.API.DTOs.Mapper
+namespace SproomInbox.API.Utils.Mapper
 {
     public class ModelDtoMapper : Profile
     {
