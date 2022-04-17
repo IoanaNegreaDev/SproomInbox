@@ -4,7 +4,7 @@ using SproomInbox.API.Utils.Extensions;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Shared.Resources;
 
-namespace SproomInbox.API.Utils.Mapper
+namespace SproomInbox.API.Utils.DtoMapper
 {
     public class ModelDtoMapper : Profile
     {

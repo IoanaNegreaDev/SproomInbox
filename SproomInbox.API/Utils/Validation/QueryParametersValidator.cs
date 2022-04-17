@@ -4,9 +4,9 @@ using SproomInbox.API.Utils.Parametrization;
 
 namespace RentalAPI.ValidationFilters
 {
-    public class QueryParametesValidator: AbstractValidator<DocumentsQueryParameters>
+    public class QueryParametersValidator: AbstractValidator<DocumentsQueryParameters>
     {
-        public QueryParametesValidator()
+        public QueryParametersValidator()
         {
             RuleFor(param => param.UserName).NotEmpty()
                                             .NotNull()

@@ -65,22 +65,22 @@ namespace SproomInbox.API.Domain
                 {
                     Id = 1,
                     FirstName = "Paul",
-                    LastName = "Muad'Dib",
-                    UserName = "TheOne"
+                    LastName = "Atreides",
+                    UserName = "MuadDib"
                 },
                 new User
                 {
                     Id = 2,
                     FirstName = "Frodo",
                     LastName = "Baggins",
-                    UserName = "RingBearer"
+                    UserName = "Hobbit"
                 },
                 new User
                 {
                     Id = 3,
-                    FirstName = "John",
-                    LastName = "Snow",
-                    UserName = "TheChosen"
+                    FirstName = "Harry",
+                    LastName = "Potter",
+                    UserName = "Wizard"
                 }
             );
 
@@ -90,41 +90,48 @@ namespace SproomInbox.API.Domain
                                UserId = 1,
                                TypeId = DocumentType.Invoice, 
                                StateId = State.Received, 
-                               CreationDate = DateTime.Now, 
+                               CreationDate = DateTime.Now.AddDays(-3), 
                                FileReference = "\\SproomDocumentFiles\\Invoices\\" },
 
                 new Document { Id = Guid.NewGuid(), 
                                 UserId = 1,
                                 TypeId = DocumentType.Invoice,
-                                StateId = State.Approved, 
-                                CreationDate = DateTime.Now, 
+                                StateId = State.Received, 
+                                CreationDate = DateTime.Now.AddDays(-5), 
+                                FileReference = "\\SproomDocumentFiles\\Invoices\\" },
+
+                new Document { Id = Guid.NewGuid(),
+                                UserId = 1,
+                                TypeId = DocumentType.Invoice,
+                                StateId = State.Received,
+                                CreationDate = DateTime.Now.AddDays(-1),
                                 FileReference = "\\SproomDocumentFiles\\Invoices\\" },
 
                 new Document { Id = Guid.NewGuid(),
                                 UserId = 2,     
                                 TypeId = DocumentType.Invoice, 
-                                StateId = State.Rejected, 
-                                CreationDate = DateTime.Now,
+                                StateId = State.Received, 
+                                CreationDate = DateTime.Now.AddDays(-1),
                                 FileReference = "\\SproomDocumentFiles\\Invoices\\" },
 
                 new Document { Id = Guid.NewGuid(),
                                 UserId = 2,     
                                 TypeId = DocumentType.CreditNote, 
                                 StateId = State.Received, 
-                                CreationDate = DateTime.Now, 
+                                CreationDate = DateTime.Now.AddDays(-10), 
                                 FileReference = "\\SproomDocumentFiles\\CreditNotes\\" },
 
                 new Document { Id = Guid.NewGuid(), 
                                 UserId = 2,     
                                 TypeId = DocumentType.CreditNote, 
-                                StateId = State.Approved, 
-                                CreationDate = DateTime.Now, 
+                                StateId = State.Received, 
+                                CreationDate = DateTime.Now.AddDays(-4), 
                                 FileReference = "\\SproomDocumentFiles\\CreditNotes\\" },
 
                 new Document { Id = Guid.NewGuid(),
                                 UserId = 3,     
                                 TypeId = DocumentType.CreditNote, 
-                                StateId = State.Rejected,
+                                StateId = State.Received,
                                 CreationDate = DateTime.Now, 
                                 FileReference = "\\SproomDocumentFiles\\CreditNotes\\" }
             );          

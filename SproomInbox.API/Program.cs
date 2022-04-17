@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SproomInbox.API.Domain;
 using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Domain.Services;
-using SproomInbox.API.Utils.Mapper;
+using SproomInbox.API.Utils.DtoMapper;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

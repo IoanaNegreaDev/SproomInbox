@@ -33,8 +33,17 @@ namespace SproomInbox.API.Domain.Repositories
                 return await ListAsync();
 
             var collection = _table as IQueryable<Document>;
-            bool ingnoreCase = true;
+            collection = ApplyFilter(queryParameters, collection);
+            collection = ApplySearch(queryParameters.Search, collection);
+            collection = collection.Include(document => document.StateHistory);
 
+            return await PagedList<Document>.Create(collection, queryParameters.Paging);
+        }
+
+        private IQueryable<Document> ApplyFilter(DocumentsQueryParameters queryParameters, 
+                                                 IQueryable<Document> collection)
+        {
+            bool ingnoreCase = true;
 
             if (!string.IsNullOrWhiteSpace(queryParameters.UserName))
             {
@@ -57,10 +66,16 @@ namespace SproomInbox.API.Domain.Repositories
                 collection = collection.Where(document => document.StateId == queryStateId);
             }
 
-            if (!string.IsNullOrWhiteSpace(queryParameters.Search))
+            return collection;
+        }
+
+        private IQueryable<Document> ApplySearch(string searchQuery, IQueryable<Document> collection)
+        {
+            if (!string.IsNullOrWhiteSpace(searchQuery))
             {
-                var lowerCaseSearchString = queryParameters.Search.ToLower();
-  
+                bool ingnoreCase = true;
+                var lowerCaseSearchString = searchQuery.Trim().ToLower();
+
                 var documentTypeString = Enum.GetNames(typeof(DocumentType)).Where(type => type.ToLower().Contains(lowerCaseSearchString)).FirstOrDefault();
                 Enum.TryParse<DocumentType>(documentTypeString, ingnoreCase, out var documentTypeValue);
 
@@ -70,13 +85,10 @@ namespace SproomInbox.API.Domain.Repositories
                 collection = collection.Where(document => document.User.UserName.ToLower().Contains(lowerCaseSearchString) ||
                                                           document.User.FirstName.ToLower().Contains(lowerCaseSearchString) ||
                                                           document.TypeId == documentTypeValue ||
-                                                          document.StateId == documentStateValue ||                                           
+                                                          document.StateId == documentStateValue ||
                                                           document.CreationDate.ToString().ToLower().Contains(lowerCaseSearchString));
             }
-
-            collection = collection.Include(document => document.StateHistory);
-
-            return await PagedList<Document>.Create(collection, queryParameters.Paging);
+            return collection;
         }
 
         public async Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters)
@@ -84,6 +96,6 @@ namespace SproomInbox.API.Domain.Repositories
                                             document.User.UserName == findParameters.UserName)
                         .FirstOrDefaultAsync();
         public void Update(Document document)
-            => _table.Update(document);
+          => _table.Update(document);   
       }
 }
