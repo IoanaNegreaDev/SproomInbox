@@ -18,9 +18,10 @@ namespace SproomInbox.WebApp.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<DocumentDto>> GetDocuments()
+        public async Task<IEnumerable<DocumentDto>> GetDocuments(string userName)
         {
-            var result = await _httpClient.GetAsync("http://localhost:5000/api/v1.0/documents?UserName=TheOne");
+            string uri = "http://localhost:6170/api/v1.0/documents?username=" + userName;
+            var result = await _httpClient.GetAsync(uri);
             return await result.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>();
         }
     }

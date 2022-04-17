@@ -13,7 +13,10 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Date</th>                
+                <th>Type</th>
+                <th>Status</th>
+                <th>Date</th>    
+                <th></th>    
             </tr>
         </thead>
         <tbody>
@@ -21,6 +24,8 @@
             {
                 <tr>
                     <td>@document.Id</td>
+                    <td>@document.Type</td>
+                    <td>@document.State</td>
                     <td>@document.CreationDate.ToShortDateString()</td>
                 </tr>
             }
@@ -35,9 +40,7 @@ else {
     private IList<DocumentDto>? documents;
 
     protected override async Task OnInitializedAsync()
-    {
-  
-        
-        documents = await Http.GetFromJsonAsync<IList<DocumentDto>>("https://localhost:5001/api/v1.0/documents/?username=TheOne");
+    {    
+        documents = await Http.GetFromJsonAsync<IList<DocumentDto>>($"document?username=TheOne");
     }
 }
