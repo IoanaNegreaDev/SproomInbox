@@ -5,7 +5,7 @@
 @if (_statusHistory != null)
 {
     <p>There are @_statusHistory.Count status shanges</p>
-    <table class="table">
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Timestamp</th>
@@ -18,7 +18,7 @@
                 <tr>
                     <td>@statusChange.Timestamp</td>
                     <td>@statusChange.State</td>
-                 </tr>
+                </tr>
             }
         </tbody>
     </table>

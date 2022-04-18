@@ -26,9 +26,9 @@
                     continue;
                 <tr>
                     <td>
-                        <input class="custom-checkbox" 
+                        <input class="custom-control-input" id="customCheck"
                                type="checkbox" 
-                               disabled=@IsDocumentFinalState(@document.State) 
+                               disabled=@IsDocumentFinalState(@document.State)                           
                                @onchange="eventArgs => { OnCheckboxClicked(document.Id, eventArgs.Value); }" 
                         />
                     </td>
@@ -36,6 +36,11 @@
                     <td>@document.Type</td>
                     <td>@document.State</td>
                     <td>@document.CreationDate.ToShortDateString()</td>
+                    <td>
+                         <a href="@($"documentstatehistory/{document.Id}")" class="btn btn-primary border-radius: 30px alert-primary">
+                            History
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -43,16 +48,14 @@
 
     <p></p>
 
-    <button @onclick="OnApprove">
-        Approve
-    </button>
-
-    <button @onclick="OnReject">
-         Reject
-    </button>
-
+    <div class="span2">
+        <button class="btn btn-primary border-radius: 30px alert-primary" @onclick="OnApprove"> Approve </button>
+            &nbsp;
+        <button class="btn btn-primary border-radius: 30px alert-primary" @onclick="OnReject"> Reject </button>
+    </div>
 } 
 else {
+    <p></p>
     <p><em>...</em></p>
 }
 
