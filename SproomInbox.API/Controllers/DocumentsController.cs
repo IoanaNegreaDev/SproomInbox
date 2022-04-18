@@ -64,10 +64,9 @@ namespace SproomInbox.API
             return Ok(documentDto);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById(
-                                                              string id, string userName,
-                                                              string newState)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<DocumentDto>> Update(string id, string userName,
+                                                                         string newState)
         {
             if (!Guid.TryParse(id, out var documentId))
                 return BadRequest("Invalid Id value.");
@@ -85,6 +84,31 @@ namespace SproomInbox.API
 
             var documentDto = _mapper.Map<Document, DocumentDto>(document);
             return Ok(documentDto);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> Update(DocumentListUpdateParameters updateParameters)
+        { 
+            List<DocumentsFindByIdParameters > findByIdParametersList = new List< DocumentsFindByIdParameters >();
+            foreach (var id in updateParameters.DocumentIds)
+            {
+                if (!Guid.TryParse(id, out var documentId))
+                    return BadRequest("Invalid Id value.");
+
+                DocumentsFindByIdParameters findByIdParameters = new DocumentsFindByIdParameters()
+                {
+                    Id = documentId,
+                    UserName = updateParameters.UserName
+                };
+                findByIdParametersList.Add(findByIdParameters);
+            }
+
+            var documents = await _documentsService.UpdateAsync(findByIdParametersList, updateParameters.NewState);
+            if (documents == null)
+                return NotFound();
+
+            var documentsDto = _mapper.Map<IEnumerable<Document>, IEnumerable<DocumentDto>>(documents);
+            return Ok(documentsDto);
         }
     }
 }

@@ -1,0 +1,29 @@
+﻿@page "/documentstatehistory/{DocumentId}"
+
+<h4 class="page-title">Status History for document @DocumentId</h4>
+
+@if (_statusHistory != null)
+{
+    <p>There are @_statusHistory.Count status shanges</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var statusChange in _statusHistory)
+            {
+                <tr>
+                    <td>@statusChange.Timestamp</td>
+                    <td>@statusChange.State</td>
+                 </tr>
+            }
+        </tbody>
+    </table>
+} 
+else {
+    <p><em>Loading...</em></p>
+}
+

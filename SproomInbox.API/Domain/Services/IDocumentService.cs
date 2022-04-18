@@ -9,5 +9,6 @@ namespace SproomInbox.API.Domain.Services
         Task<PagedList<Document>> ListDocumentsAsync(DocumentsQueryParameters queryParameters);
         Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters);
         Task<Document> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState);
+        Task<IEnumerable<Document>> UpdateAsync(List<DocumentsFindByIdParameters> findParametersList, string newState);
     }
 }

@@ -50,5 +50,40 @@ namespace SproomInbox.API.Domain.Services
 
             return dbDocument;
         }
+
+        public async Task<IEnumerable<Document>> UpdateAsync(List<DocumentsFindByIdParameters> findParametersList, string newState)
+        {
+            List<Document> updatedDocuments= new List<Document>();
+
+            foreach (var findParameters in findParametersList)
+            {
+                var dbDocument = await FindByIdAsync(findParameters);
+                if (dbDocument == null)
+                    throw new Exception($"Document with {findParameters.Id} not found.");
+
+                if (Enum.TryParse<State>(newState, true, out var newStateId) &&
+                    Enum.IsDefined<State>(newStateId))
+                {
+                    var newDocumentState = new DocumentState()
+                    {
+                        DocumentId = dbDocument.Id,
+                        Timestamp = DateTime.Now,
+                        StateId = dbDocument.StateId,
+                    };
+
+                    dbDocument.StateId = newStateId;
+                    _unitOfWork.DocumentRepository.Update(dbDocument);
+                    await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
+                    
+                    updatedDocuments.Add(dbDocument);
+
+                }
+            }
+
+            if (updatedDocuments.Count > 0)
+                _unitOfWork.SaveChanges();
+
+            return updatedDocuments;
+        }
     }
 }

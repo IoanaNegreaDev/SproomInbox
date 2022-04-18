@@ -3,11 +3,10 @@
 @using System.Threading;
 @inject HttpClient Http
 
-<h1>Sproom Inbox</h1>
-
 @if (_documents != null)
 {
-    <p>You have @_documents.Count documents of which @_selectedIds.Count are selected.</p>
+    <p></p>
+    <p>@_documents.Count documents. @_selectedIds.Count are selected.</p>
 
     <table class="table table-striped">
         <thead class="thead-light">
@@ -24,10 +23,14 @@
             @foreach (var document in _documents)
             {
                 if (!IsVisible(document))
-                  continue;
+                    continue;
                 <tr>
                     <td>
-                        <input class="custom-checkbox" type="checkbox" @onchange="eventArgs => { OnCheckboxClicked(document.Id, eventArgs.Value); }" />
+                        <input class="custom-checkbox" 
+                               type="checkbox" 
+                               disabled=@IsDocumentFinalState(@document.State) 
+                               @onchange="eventArgs => { OnCheckboxClicked(document.Id, eventArgs.Value); }" 
+                        />
                     </td>
                     <td>@document.Id</td>
                     <td>@document.Type</td>
@@ -37,7 +40,24 @@
             }
         </tbody>
     </table>
+
+    <p></p>
+
+    <button @onclick="OnApprove">
+        Approve
+    </button>
+
+    <button @onclick="OnReject">
+         Reject
+    </button>
+
 } 
 else {
-    <p><em>Loading...</em></p>
+    <p><em>...</em></p>
+}
+
+@code
+{
+
+    
 }

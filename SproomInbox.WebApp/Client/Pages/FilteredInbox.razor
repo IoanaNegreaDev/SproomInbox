@@ -1,6 +1,8 @@
-﻿@page "/filters"
+﻿@page "/filteredinbox"
 @using SproomInbox.WebApp.Shared.Resources
 @inject HttpClient Http
+
+<h1>Sproom Inbox</h1>
 
 @if (_users != null)
 {
@@ -8,28 +10,30 @@
         <EditForm Model=@Document>
             <label for="filters">Filters:   </label>            
             <InputSelect id="statusSelectionUser" @bind-Value = "@UserNameFilter" @onclick="() => _needsRefreshing = true">
+                <option value=@string.Empty>UserName</option>
                 @foreach (var user in _users)
                 {
-                <option value="@user.UserName">@user.UserName</option>
+                    <option value="@user.UserName">@user.UserName</option>
                 }                                       
                 </InputSelect>   
+                
                 <InputSelect id="statusSelection" @bind-Value = "@DocumentTypeFilter" @onclick="() => _needsRefreshing = true">
-                        <option value=@String.Empty>Any type</option>
-                        <option value="@(DocumentTypeDto.Invoice)">Invoice</option>
-                        <option value="@(DocumentTypeDto.CreditNote)">CreditNote</option>                    
+                    <option value=@String.Empty>Any type</option>
+                    <option value="@(DocumentTypeDto.Invoice)">Invoice</option>
+                    <option value="@(DocumentTypeDto.CreditNote)">CreditNote</option>                    
                 </InputSelect>   
+                
                 <InputSelect id="statusSelection" @bind-Value = "@DocumentStateFilter" @onclick="() => _needsRefreshing = true">
-                        <option value=@String.Empty>Any status</option>
-                        <option value="@(StateDto.Received)">Received</option>
-                        <option value="@(StateDto.Approved)">Approved</option>                    
-                        <option value="@(StateDto.Rejected)">Rejected</option>     
+                    <option value=@String.Empty>Any status</option>
+                    <option value="@(StateDto.Received)">Received</option>
+                    <option value="@(StateDto.Approved)">Approved</option>                    
+                    <option value="@(StateDto.Rejected)">Rejected</option>     
                 </InputSelect>   
-                <button type="button" @onclick="() => _needsRefreshing = true"> Apply </button>
-        </EditForm>
+         </EditForm>
     </section>
 }
 else {
-    <p><em>Loading...</em></p>
+    <p><em>Loading users...</em></p>
 }
 
 @if (_needsRefreshing)

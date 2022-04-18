@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SproomInbox.WebApp.Shared.Resources;
+using System.Text;
+using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SproomInbox.WebApp.Server.Controllers
 {
@@ -40,9 +43,26 @@ namespace SproomInbox.WebApp.Server.Controllers
                     filterString += $"&state={state}";
 
             string uri = _baseApiRoute + "documents" + filterString;
-
+          
             var result = await _httpClient.GetAsync(uri);
             return await result.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>();
+        }
+
+
+        [HttpPut]
+        public async Task<IEnumerable<DocumentDto>> UpdateDocuments(DocumentListUpdateParameters updateParameters)
+        {
+            var updateParametersJson = new StringContent(
+                  JsonSerializer.Serialize(updateParameters),
+                  Encoding.UTF8,
+                  Application.Json);
+
+            string uri = _baseApiRoute + "documents" ;
+            var httpResponseMessage = await _httpClient.PutAsync(uri, updateParametersJson);
+
+            httpResponseMessage.EnsureSuccessStatusCode();
+
+            return await httpResponseMessage.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>();
         }
     }
 }
