@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using SproomInbox.WebApp.Shared.Resources;
+using System.Net.Http.Json;
 
 namespace SproomInbox.WebApp.Client.Pages
 {
@@ -16,25 +17,12 @@ namespace SproomInbox.WebApp.Client.Pages
         public EventCallback<int> OnFiltersChange { get; set; }
         protected override async Task OnInitializedAsync()
         {
-           
-            _users = new List<UserDto>()
-            {
-                new UserDto()
-                {
-                    UserName = "MuadDib",
-                    FirstName = "Paul",
-                    LastName = "Atreides"
-                },
+            _users = await Http.GetFromJsonAsync<IList<UserDto>>($"user");
 
-                new UserDto()
-                {
-                    UserName = "Hobbit",
-                    FirstName = "Frodo",
-                    LastName = "Baggins"
-                }
-            };
-
-            UserNameFilter = _users[0].UserName;
+            if (_users != null)
+                 UserNameFilter = _users[0].UserName;
+            
+            await base.OnInitializedAsync(); ;
         }  
     }
 }

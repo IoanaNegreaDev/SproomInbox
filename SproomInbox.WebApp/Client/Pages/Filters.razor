@@ -7,7 +7,7 @@
     <section class="state-selector">
         <EditForm Model=@Document>
             <label for="filters">Filters:   </label>            
-            <InputSelect id="statusSelectionUser" @bind-Value = "@UserNameFilter">
+            <InputSelect id="statusSelectionUser" @bind-Value = "@UserNameFilter" @onclick="() => _needsRefreshing = true">
                 @foreach (var user in _users)
                 {
                 <option value="@user.UserName">@user.UserName</option>
