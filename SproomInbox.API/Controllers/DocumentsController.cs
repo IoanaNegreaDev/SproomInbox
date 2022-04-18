@@ -10,15 +10,15 @@ namespace SproomInbox.API
 {
     [ApiController]
     [Route("api/v1.0/documents")]
-    public class DocumentController : ControllerBase
+    public class DocumentsController : ControllerBase
     {
-        private readonly ILogger<DocumentController> _logger;
-        private readonly IDocumentsService _documentsService;
+        private readonly ILogger<DocumentsController> _logger;
+        private readonly IDocumentService _documentsService;
         private readonly IMapper _mapper;
 
-        public DocumentController(IDocumentsService documentsService,
+        public DocumentsController(IDocumentService documentsService,
                                   IMapper mapper,
-                                  ILogger<DocumentController> logger)
+                                  ILogger<DocumentsController> logger)
         {
             if (documentsService == null)
                 throw new ArgumentNullException(nameof(documentsService));

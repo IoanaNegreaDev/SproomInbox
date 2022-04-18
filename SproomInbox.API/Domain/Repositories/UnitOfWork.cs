@@ -4,6 +4,8 @@
     {
         IDocumentStateRepository DocumentStateRepository { get; }
         IDocumentsRepository DocumentRepository { get; }
+
+        IUserRepository UserRepository { get; }
         void SaveChanges();
     }
 
@@ -17,6 +19,7 @@
         }
 
         private IDocumentStateRepository _documentStateRepository;
+      
         public IDocumentStateRepository DocumentStateRepository
         {
             get
@@ -41,6 +44,20 @@
                 }
 
                 return _documentRepository;
+            }
+        }
+
+        private IUserRepository _userRepository;
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new UserRepository(_context);
+                }
+
+                return _userRepository;
             }
         }
 

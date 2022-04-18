@@ -20,7 +20,9 @@ builder.Services.AddSingleton(mapper);
 
 builder.Services.AddScoped<IDocumentsRepository, DocumentsRepository>();
 builder.Services.AddScoped<IDocumentStateRepository, DocumentStateRepository>();
-builder.Services.AddScoped<IDocumentsService, DocumentsService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();  
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers()
@@ -31,7 +33,7 @@ builder.Services.AddControllers()
                     options.ImplicitlyValidateRootCollectionElements = true;
                     options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                 });
-              //  .SetCompatibilityVersion(CompatibilityVersion.Version_3_0); 
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

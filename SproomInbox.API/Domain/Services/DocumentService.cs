@@ -5,11 +5,10 @@ using SproomInbox.API.Utils.Parametrization;
 
 namespace SproomInbox.API.Domain.Services
 {
-    public class DocumentsService : IDocumentsService
+    public class DocumentService : IDocumentService
     {
         private readonly IUnitOfWork _unitOfWork;
-      //  private readonly IDocumentsRepository _documentsRepository;
-        public DocumentsService(IUnitOfWork unitOfWork)
+        public DocumentService(IUnitOfWork unitOfWork)
         {
             if (unitOfWork == null)
                 throw new ArgumentNullException(nameof(unitOfWork));

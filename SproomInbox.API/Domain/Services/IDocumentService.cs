@@ -4,7 +4,7 @@ using SproomInbox.API.Utils.Parametrization;
 
 namespace SproomInbox.API.Domain.Services
 {
-    public interface IDocumentsService
+    public interface IDocumentService
     {
         Task<PagedList<Document>> ListDocumentsAsync(DocumentsQueryParameters queryParameters);
         Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters);

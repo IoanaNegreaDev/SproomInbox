@@ -21,7 +21,7 @@ namespace SproomInbox.API.Utils.DtoMapper
             CreateMap<DocumentState, DocumentStateDto>()
                   .ForMember(dest => dest.State,
                              opt => opt.MapFrom(src => src.StateId.ToDescriptionString()));
-   
+
             CreateMap(typeof(PagedList<Document>), typeof(PagedList<DocumentDto>)).ConvertUsing(typeof(PagedListMapper<Document, DocumentDto>));
         }  
     }
