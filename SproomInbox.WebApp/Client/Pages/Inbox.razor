@@ -7,10 +7,12 @@
 
 @if (_documents != null)
 {
-    <p>You have @_documents.Count documents</p>
+    <p>You have @_documents.Count documents of which @_selectedIds.Count are selected.</p>
+
     <table class="table table-striped">
         <thead class="thead-light">
             <tr>
+                <th>&nbsp;</th>
                 <th>Id</th>
                 <th>Type</th>
                 <th>Status</th>
@@ -24,6 +26,9 @@
                 if (!IsVisible(document))
                   continue;
                 <tr>
+                    <td>
+                        <input class="custom-checkbox" type="checkbox" @onchange="eventArgs => { OnCheckboxClicked(document.Id, eventArgs.Value); }" />
+                    </td>
                     <td>@document.Id</td>
                     <td>@document.Type</td>
                     <td>@document.State</td>

@@ -6,7 +6,7 @@ namespace SproomInbox.WebApp.Client.Pages
     public partial class Filters
     {
         private IList<UserDto>? _users;
-        public string UserNameFilter { get; set; }=String.Empty;
+        public string UserNameFilter { get; set; } = String.Empty;
         public string DocumentStateFilter { get; set; } = String.Empty;
         public string DocumentTypeFilter { get; set; } = String.Empty;
 

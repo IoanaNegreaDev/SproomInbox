@@ -13,34 +13,31 @@
                 <option value="@user.UserName">@user.UserName</option>
                 }                                       
                 </InputSelect>   
-                <InputSelect id="statusSelection" @bind-Value = "@DocumentTypeFilter">
-                        <option value=0>Any type</option>
+                <InputSelect id="statusSelection" @bind-Value = "@DocumentTypeFilter" @onclick="() => _needsRefreshing = true">
+                        <option value=@String.Empty>Any type</option>
                         <option value="@(DocumentTypeDto.Invoice)">Invoice</option>
                         <option value="@(DocumentTypeDto.CreditNote)">CreditNote</option>                    
                 </InputSelect>   
-                <InputSelect id="statusSelection" @bind-Value = "@DocumentStateFilter">
-                        <option value=0>Any status</option>
+                <InputSelect id="statusSelection" @bind-Value = "@DocumentStateFilter" @onclick="() => _needsRefreshing = true">
+                        <option value=@String.Empty>Any status</option>
                         <option value="@(StateDto.Received)">Received</option>
                         <option value="@(StateDto.Approved)">Approved</option>                    
                         <option value="@(StateDto.Rejected)">Rejected</option>     
                 </InputSelect>   
-                <button type="button" @onclick="() => ApplyFilter = true">
-                                                    Apply
-                                                </button>
-              
-
-         
+                <button type="button" @onclick="() => _needsRefreshing = true"> Apply </button>
         </EditForm>
     </section>
 }
 else {
     <p><em>Loading...</em></p>
 }
-@if (ApplyFilter)
+
+@if (_needsRefreshing)
 {
-    <Inbox UserNameFilter=@UserNameFilter DocumentTypeFilter=@DocumentTypeFilter  DocumentStateFilter=@DocumentStateFilter/>
+    <Inbox UserNameFilter=@UserNameFilter DocumentTypeFilter=@DocumentTypeFilter DocumentStateFilter=@DocumentStateFilter />
+    _needsRefreshing = false;
 }
 
 @code {
-    bool ApplyFilter = false;
+    bool _needsRefreshing = false;
 } 

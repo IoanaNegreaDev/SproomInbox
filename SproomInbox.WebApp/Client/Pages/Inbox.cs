@@ -7,46 +7,39 @@ namespace SproomInbox.WebApp.Client.Pages
     public partial class Inbox
     {
         private IList<DocumentDto>? _documents;
+        private IList<string> _selectedIds { get; set; } = new List<string>();
+        private DocumentDto Document { get; set; } = new DocumentDto();
 
         private IList<UserDto>? _users;
         [Parameter]
-        public string UserNameFilter { get; set; }
+        public string UserNameFilter { get; set; } = string.Empty;
 
         [Parameter]
-        public string DocumentStateFilter { get; set; }
+        public string DocumentStateFilter { get; set; } = string.Empty;
 
         [Parameter]
-        public string DocumentTypeFilter { get; set; }
+        public string DocumentTypeFilter { get; set; } = string.Empty;
 
-        public DocumentDto Document { get; set; } = new DocumentDto();
 
         //    public StateDto DocumentState { get; set; } = new StateDto();
         //    public DocumentTypeDto DocumentType { get; set; } = new DocumentTypeDto();
         //   public List<string> SelectedValues { get; set; } = new List<string>();
         protected override async Task OnInitializedAsync()
         {
-            Console.Write($"STATAEEEEEEEEEEEEEEEEEEEE : {UserNameFilter}");
-            _documents = await OnRefreshDocumentsAsync();
-            Console.Write($"STATAEEEEEEEEEEEEEEEEEEEE : {DocumentStateFilter}");
+             _documents = await OnRefreshDocumentsAsync();
             await base.OnInitializedAsync();
         }
 
         protected async Task<IList<DocumentDto>> OnRefreshDocumentsAsync()
         {
             string filterString = string.Empty;
-            if (!string.IsNullOrEmpty(UserNameFilter))
-                filterString = $"?username={UserNameFilter}";
-
-    
-                filterString += $"&type={DocumentTypeFilter}";
-
-       
-                    filterString += $"&state={DocumentStateFilter}";
+            filterString = $"?username={UserNameFilter}";
+            filterString += $"&type={DocumentTypeFilter}";
+            filterString += $"&state={DocumentStateFilter}";
 
             return await Http.GetFromJsonAsync<IList<DocumentDto>>($"document" + filterString);
         }
-     
-
+   
         public bool IsVisible(DocumentDto document)
         {      
             Console.Write($"state : {DocumentStateFilter}");
@@ -56,25 +49,23 @@ namespace SproomInbox.WebApp.Client.Pages
             return visible;
         }
 
-        /*        public void CheckboxClicked(string aSelectedId, object aChecked)
+        public void OnCheckboxClicked(string documentId, object isChecked)
+        {
+            if ((bool)isChecked)
+            {
+                if (!_selectedIds.Contains(documentId))
                 {
-                    if ((bool)aChecked)
-                    {
-                        if (!SelectedValues.Contains(aSelectedId))
-                        {
-                            SelectedValues.Add(aSelectedId);
-                        }
-                    }
-                   else
-                    {
-                        if (SelectedValues.Contains(aSelectedId))
-                        {
-                            SelectedValues.Remove(aSelectedId);
-                        }
-                    }
-                    StateHasChanged();
-                }*/
-
-
+                    _selectedIds.Add(documentId);
+                }
+            }
+            else
+            {
+                if (_selectedIds.Contains(documentId))
+                {
+                    _selectedIds.Remove(documentId);
+                }
+            }
+            StateHasChanged();
+        }
     }
 }
