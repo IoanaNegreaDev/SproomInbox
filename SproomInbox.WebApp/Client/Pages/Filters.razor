@@ -1,0 +1,46 @@
+﻿@page "/filters"
+@using SproomInbox.WebApp.Shared.Resources
+@inject HttpClient Http
+
+@if (_users != null)
+{
+    <section class="state-selector">
+        <EditForm Model=@Document>
+            <label for="filters">Filters:   </label>            
+            <InputSelect id="statusSelectionUser" @bind-Value = "@UserNameFilter">
+                @foreach (var user in _users)
+                {
+                <option value="@user.UserName">@user.UserName</option>
+                }                                       
+                </InputSelect>   
+                <InputSelect id="statusSelection" @bind-Value = "@DocumentTypeFilter">
+                        <option value=0>Any type</option>
+                        <option value="@(DocumentTypeDto.Invoice)">Invoice</option>
+                        <option value="@(DocumentTypeDto.CreditNote)">CreditNote</option>                    
+                </InputSelect>   
+                <InputSelect id="statusSelection" @bind-Value = "@DocumentStateFilter">
+                        <option value=0>Any status</option>
+                        <option value="@(StateDto.Received)">Received</option>
+                        <option value="@(StateDto.Approved)">Approved</option>                    
+                        <option value="@(StateDto.Rejected)">Rejected</option>     
+                </InputSelect>   
+                <button type="button" @onclick="() => ApplyFilter = true">
+                                                    Apply
+                                                </button>
+              
+
+         
+        </EditForm>
+    </section>
+}
+else {
+    <p><em>Loading...</em></p>
+}
+@if (ApplyFilter)
+{
+    <Inbox UserNameFilter=@UserNameFilter DocumentTypeFilter=@DocumentTypeFilter  DocumentStateFilter=@DocumentStateFilter/>
+}
+
+@code {
+    bool ApplyFilter = false;
+} 

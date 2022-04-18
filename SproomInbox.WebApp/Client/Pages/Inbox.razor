@@ -1,0 +1,38 @@
+﻿@page "/inbox/{UserNameFilter}/{DocumentTypeFilter}/{DocumentStateFilter}"
+@using SproomInbox.WebApp.Shared.Resources
+@using System.Threading;
+@inject HttpClient Http
+
+<h1>Sproom Inbox</h1>
+
+@if (_documents != null)
+{
+    <p>You have @_documents.Count documents</p>
+    <table class="table table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Date</th>    
+                <th></th>    
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var document in _documents)
+            {
+                if (!IsVisible(document))
+                  continue;
+                <tr>
+                    <td>@document.Id</td>
+                    <td>@document.Type</td>
+                    <td>@document.State</td>
+                    <td>@document.CreationDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} 
+else {
+    <p><em>Loading...</em></p>
+}

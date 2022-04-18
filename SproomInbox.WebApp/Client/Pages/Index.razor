@@ -1,46 +1,7 @@
 ﻿@page "/"
 @using SproomInbox.WebApp.Shared.Resources
+@using SproomInbox.WebApp.Client.Pages
 @inject HttpClient Http
 
-<PageTitle>Sproom Inbox</PageTitle>
+<Filters />
 
-<h1>Sproom Inbox</h1>
-
-@if (documents != null)
-{
-    <p>Welcome to your inbox! You have @documents.Count documents</p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Date</th>    
-                <th></th>    
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var document in documents)
-            {
-                <tr>
-                    <td>@document.Id</td>
-                    <td>@document.Type</td>
-                    <td>@document.State</td>
-                    <td>@document.CreationDate.ToShortDateString()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-} 
-else {
-    <p><em>Loading...</em></p>
-}
-
-@code {
-    private IList<DocumentDto>? documents;
-
-    protected override async Task OnInitializedAsync()
-    {    
-        documents = await Http.GetFromJsonAsync<IList<DocumentDto>>($"document?username=MuadDib");
-    }
-}
