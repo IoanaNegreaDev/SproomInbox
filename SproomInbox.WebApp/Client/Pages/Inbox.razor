@@ -1,16 +1,16 @@
 ﻿@page "/inbox/{FilterParameters}"
 @using SproomInbox.WebApp.Shared.Resources
 @using System.Threading;
-@inject HttpClient Http
 
 @if (_documents != null)
 {
     <p></p>
     <p>@_documents.Count documents. @_selectedIds.Count are selected.</p>
 
-    <table class="table table-striped" align="left">
+    <table class="table" align="left" >
         <thead class="thead-light">
-            <tr>             
+            <tr>     
+                <th></th>
                 <th>Id</th>
                 <th>Type</th>
                 <th>Status</th>
@@ -21,10 +21,12 @@
         <tbody>
             @foreach (var document in _documents)
             {
-                <tr @onclick="() => _documentView[document.Id] = ! _documentView[document.Id]">
+                <tr style="background:@(@IsDocumentFinalState(@document.State) == true ? "GhostWhite" :"White" );"
+                    @onclick="() => _documentExpanded[document.Id] = ! _documentExpanded[document.Id]">
                     <td>
                         <input class="custom-control-input" id="customCheck"
                                type="checkbox" 
+
                                disabled=@IsDocumentFinalState(@document.State)                           
                                @onchange="eventArgs => { OnCheckboxClicked(document.Id, eventArgs.Value); }" 
                         />
@@ -34,28 +36,30 @@
                     <td>@document.State</td>
                     <td>@document.CreationDate.ToShortDateString()</td>
                  </tr>
-                 @if (_documentView[document.Id])
+                 @if (_documentExpanded[document.Id] && document.StateHistory.Count>0)
                  {      
-                     <td></td>
+                       <td></td>
+                       <p>Status History:</p>
                        <table class="child-grid" cellpadding=5 align="left" >
-
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var statusChange in document.StateHistory)
-                            {
+                           <thead>
                                 <tr>
-                                    <td>@statusChange.Timestamp</td>
-                                    <td>@statusChange.State</td>
+                                    <th>Timestamp</th>
+                                    <th>Status</th>
                                 </tr>
-                            }
-                       </tbody>
-                    </table>                  
+                            </thead>
+                            <tbody>
+                                @foreach (var statusChange in document.StateHistory)
+                                {
+                                    <tr>
+                                        <td>@statusChange.Timestamp</td>
+                                        <td>@statusChange.State</td>
+                                    </tr>
+                                }
+                           </tbody>
+                        </table>    
+                    
                  }
+                  <tr></tr>
             }
         </tbody>
     </table>
@@ -63,9 +67,9 @@
     <p></p>
 
     <div class="span2">
-        <button class="btn btn-primary border-radius: 30px alert-primary" @onclick="OnApprove"> Approve </button>
+        <button class="btn btn-primary border-radius: 30px alert-primary" disabled=@(@_selectedIds.Count>0 ? false : true) @onclick="OnApprove"> Approve </button>
             &nbsp;
-        <button class="btn btn-primary border-radius: 30px alert-primary" @onclick="OnReject"> Reject </button>
+        <button class="btn btn-primary border-radius: 30px alert-primary" disabled=@(@_selectedIds.Count>0 ? false : true) @onclick="OnReject"> Reject </button>
     </div>
 } 
 else {

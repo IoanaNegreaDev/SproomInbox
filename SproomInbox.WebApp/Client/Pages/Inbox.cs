@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Components;
-using SproomInbox.API.Utils.Parametrization;
+using SproomInbox.WebApp.Client.Services;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
-using System.Collections.Specialized;
-using System.Linq.Expressions;
 using System.Net.Http.Json;
-using System.Text;
 
 namespace SproomInbox.WebApp.Client.Pages
 {
-
     public partial class Inbox
     {
+        [Inject]
+        public  IDocumentsFromWebServerService DocumentService { get; set; }
+
         private IList<DocumentDto>? _documents;
         private List<string> _selectedIds { get; set; } = new List<string>();
 
-        private Dictionary<string, bool> _documentView = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _documentExpanded = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _documentChecked = new Dictionary<string, bool>();
 
         [Parameter]
         public DocumentListQueryParameters FilterParameters { get; set; } = new DocumentListQueryParameters();
@@ -25,59 +25,42 @@ namespace SproomInbox.WebApp.Client.Pages
             if (string.IsNullOrEmpty(FilterParameters.UserName))
                 return;
 
-            _documents = await OnFetchDocumentsAsync();
+            var response = await DocumentService.FetchDocumentsAsync(FilterParameters);
+            if (response.IsSuccessStatusCode)
+                _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
 
             bool documentExpanded = false;
+            bool documentChecked = false;
             foreach (var document in _documents)
-                _documentView.Add(document.Id, documentExpanded);
+            {
+                _documentExpanded.Add(document.Id, documentExpanded);
+                _documentChecked.Add(document.Id, documentChecked);
+            }
 
             await base.OnInitializedAsync();
         }
-
-        private async Task<IList<DocumentDto>> OnFetchDocumentsAsync()
+        private void OnCheckboxClicked(string documentId, object isChecked)
         {
-           /* var filterString = $"?username={FilterParameters.UserName}";
-            filterString += $"&type={FilterParameters.Type}";
-            filterString += $"&state={FilterParameters.State}";*/
-
-            NameValueCollection queryPairs = System.Web.HttpUtility.ParseQueryString(string.Empty);
-
-            queryPairs.Add("username", FilterParameters.UserName);
-            queryPairs.Add("type", FilterParameters.Type);
-            queryPairs.Add("state", FilterParameters.State);
-
-            string query = string.Empty;
-            if (queryPairs.Count > 0)
-                query = "?" + queryPairs.ToString();
-
-            return await Http.GetFromJsonAsync<IList<DocumentDto>>($"documents" + query);
-        }
-        public static class MemberInfoGetting
-        {
-            public static string GetMemberName<T>(Expression<Func<T>> memberExpression)
+            _documentChecked[documentId] = (bool)isChecked;
+            if ((bool)isChecked)
             {
-                MemberExpression expressionBody = (MemberExpression)memberExpression.Body;
-                return expressionBody.Member.Name;
+                if (!_selectedIds.Contains(documentId))
+                    _selectedIds.Add(documentId);
             }
-        }
-        private async Task<HttpResponseMessage> UpdateDocumentsAsync(string newState)
-        {
-            var updateParameters = new DocumentListStatusUpdateParameters()
+            else
             {
-                DocumentIds = _selectedIds,
-                UserName = FilterParameters.UserName,
-                NewState = newState
-            };
+                if (_selectedIds.Contains(documentId))
+                    _selectedIds.Remove(documentId);
+            }
 
-            return await Http.PutAsJsonAsync<DocumentListStatusUpdateParameters>($"documents", updateParameters);
+            StateHasChanged();
         }
-
         private async Task OnApprove()
         {
             if (string.IsNullOrEmpty(FilterParameters.UserName))
                 return;
 
-            if (_selectedIds == null || _selectedIds.Count <=0)
+            if (_selectedIds == null || _selectedIds.Count <= 0)
                 return;
 
             var newState = Enum.GetName<StateDto>(StateDto.Approved);
@@ -85,10 +68,17 @@ namespace SproomInbox.WebApp.Client.Pages
 
             if (response.IsSuccessStatusCode)
                 UpdateDocumentsLocally(newState);
+    
+            response = await DocumentService.FetchDocumentsAsync(FilterParameters);
+            if (response.IsSuccessStatusCode)
+                _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
 
+            foreach (var documentId in _documentChecked.Keys)
+                _documentChecked[documentId] = false;
+
+            _selectedIds.Clear();
             StateHasChanged();
         }
-
         private async Task OnReject()
         {
             if (string.IsNullOrEmpty(FilterParameters.UserName))
@@ -104,18 +94,35 @@ namespace SproomInbox.WebApp.Client.Pages
             if (response.IsSuccessStatusCode)
                 UpdateDocumentsLocally(newState);
 
+            response = await DocumentService.FetchDocumentsAsync(FilterParameters);
+            if (response.IsSuccessStatusCode)
+                _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
+
+            foreach (var documentId in _documentChecked.Keys)
+                _documentChecked[documentId] = false;
+
+            _selectedIds.Clear();
             StateHasChanged();
         }
+        private async Task<HttpResponseMessage> UpdateDocumentsAsync(string newState)
+        {
+            var updateParameters = new DocumentListStatusUpdateParameters()
+            {
+                DocumentIds = _selectedIds,
+                UserName = FilterParameters.UserName,
+                NewState = newState
+            };
 
+            return await DocumentService.UpdateDocumentsAsync(updateParameters);
+        }
+  
         private void UpdateDocumentsLocally(string newState)
         {
             var documentsToUpdate = _documents?.Where(item => _selectedIds.Contains(item.Id)).ToList();
             foreach (var document in documentsToUpdate)
                 document.State = newState;          
         }
-
-   
-        
+      
         private bool IsDocumentFinalState(string state)
         {
             if (Enum.TryParse<StateDto>(state, out var stateValue))
@@ -123,22 +130,6 @@ namespace SproomInbox.WebApp.Client.Pages
                     return true;
 
             return false;
-        }
-
-        private void OnCheckboxClicked(string documentId, object isChecked)
-        {
-            if ((bool)isChecked)
-            {
-                if (!_selectedIds.Contains(documentId))
-                    _selectedIds.Add(documentId);
-            }
-            else
-            {
-                if (_selectedIds.Contains(documentId))
-                    _selectedIds.Remove(documentId);
-            }
-
-            StateHasChanged();
-        }
+        } 
     }
 }

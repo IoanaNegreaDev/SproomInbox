@@ -1,6 +1,6 @@
 ﻿using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 
-namespace SproomInbox.API.Utils.Parametrization
+namespace SproomInbox.WebApp.Shared.Resources.Parametrization
 {
     public class DocumentListQueryParameters
     {

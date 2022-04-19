@@ -2,6 +2,7 @@
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Parametrization;
+using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 
 namespace SproomInbox.API.Domain.Repositories

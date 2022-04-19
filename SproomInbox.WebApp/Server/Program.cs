@@ -1,13 +1,14 @@
-using Microsoft.AspNetCore.ResponseCompression;
-using SproomInbox.WebApp.Client.Services;
 using SproomInbox.WebApp.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+string val =builder.Configuration.GetConnectionString("SproomDocumentsApiV1.0");
 // Add services to the container.
 builder.Services.AddHttpClient<IDocumentsFromApiService, DocumentsFromApiService>(client =>
                                                                     client.BaseAddress = 
-                                                                    new Uri(builder.Configuration.GetConnectionString("SproomDocumentsApiV1")));
+                                                                    new Uri(builder.Configuration.GetConnectionString("SproomDocumentsApiV1.0")));
+builder.Services.AddHttpClient<IUsersFromApiService, UsersFromApiService>(client =>
+                                                                    client.BaseAddress =
+                                                                    new Uri(builder.Configuration.GetConnectionString("SproomDocumentsApiV1.0")));
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 

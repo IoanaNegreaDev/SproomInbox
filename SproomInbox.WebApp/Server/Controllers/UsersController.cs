@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SproomInbox.WebApp.Server.Services;
 using SproomInbox.WebApp.Shared.Resources;
 
 namespace SproomInbox.WebApp.Server.Controllers
@@ -7,23 +8,23 @@ namespace SproomInbox.WebApp.Server.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private static HttpClient _httpClient = new HttpClient();
-
         private readonly ILogger<UsersController> _logger;
-        private readonly string _baseApiRoute;
+        private readonly IUsersFromApiService _usersService;
 
-        public UsersController(IConfiguration appConfig, ILogger<UsersController> logger)
+        public UsersController(IUsersFromApiService usersService, ILogger<UsersController> logger)
         {
             _logger = logger;
-            _baseApiRoute = appConfig.GetSection("ConnectionStrings:SproomDocumentsApiV1.0").Value;
+            _usersService = usersService;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            string uri = _baseApiRoute + "users";
-            var result = await _httpClient.GetAsync(uri);
-            return await result.Content.ReadFromJsonAsync<IEnumerable<UserDto>>() ?? Enumerable.Empty<UserDto>();
+            var result = await _usersService.FetchUsersAsync();
+            if (!result.IsSuccessStatusCode)
+                return BadRequest();
+
+            return Ok(await result.Content.ReadFromJsonAsync<IEnumerable<UserDto>>() ?? Enumerable.Empty<UserDto>());
         }
     }
 }

@@ -1,29 +1,27 @@
-﻿
-using SproomInbox.WebApp.Shared.Resources.Parametrization;
+﻿using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Collections.Specialized;
 using System.Text;
 using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace SproomInbox.WebApp.Server.Services
+namespace SproomInbox.WebApp.Client.Services
 {
-    public class DocumentsFromApiService : IDocumentsFromApiService
+    public class DocumentsFromWebServerService: IDocumentsFromWebServerService
     {
         private readonly HttpClient _httpClient;
-        public DocumentsFromApiService(HttpClient httpClient)
+        public DocumentsFromWebServerService(HttpClient httpClient )
         {
-            if (httpClient == null)
+            if ( httpClient == null )
                 throw new ArgumentNullException(nameof(httpClient));
-
             _httpClient = httpClient;
         }
-
         public async Task<HttpResponseMessage> FetchDocumentsAsync(DocumentListQueryParameters queryParameters)
         {
             if (queryParameters == null)
                 throw new ArgumentNullException(nameof(DocumentListQueryParameters));
 
             NameValueCollection queryPairs = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
             queryPairs.Add("username", queryParameters.UserName);
             queryPairs.Add("type", queryParameters.Type);
             queryPairs.Add("state", queryParameters.State);
@@ -35,16 +33,15 @@ namespace SproomInbox.WebApp.Server.Services
             string uri = _httpClient.BaseAddress + "documents" + query;
 
             var httpResponseMessage = await _httpClient.GetAsync(uri);
-
             return httpResponseMessage;
         }
 
         public async Task<HttpResponseMessage> UpdateDocumentsAsync(DocumentListStatusUpdateParameters updateParameters)
         {
             var updateParametersJson = new StringContent(
-            JsonSerializer.Serialize(updateParameters),
-            Encoding.UTF8,
-            Application.Json);
+                        JsonSerializer.Serialize(updateParameters),
+                        Encoding.UTF8,
+                        Application.Json);
 
             string uri = _httpClient.BaseAddress + "documents";
             var httpResponseMessage = await _httpClient.PutAsync(uri, updateParametersJson);

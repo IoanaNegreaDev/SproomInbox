@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using SproomInbox.API.Utils.Parametrization;
+using SproomInbox.WebApp.Server.Services;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
-using System.Collections.Specialized;
-using System.Text;
-using System.Text.Json;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SproomInbox.WebApp.Server.Controllers
 {
@@ -13,53 +9,41 @@ namespace SproomInbox.WebApp.Server.Controllers
     [Route("[controller]")]
     public class DocumentsController : ControllerBase
     {
-        private static HttpClient _httpClient = new HttpClient();
-
         private readonly ILogger<DocumentsController> _logger;
-        private readonly string _baseApiRoute;
-
-        public DocumentsController(IConfiguration appConfig, ILogger<DocumentsController> logger)
+        private readonly IDocumentsFromApiService _documentService;
+        public DocumentsController(IDocumentsFromApiService documentService, ILogger<DocumentsController> logger)
         {
             _logger = logger;
-            _baseApiRoute = appConfig.GetSection("ConnectionStrings:SproomDocumentsApiV1.0").Value;
+            _documentService = documentService;
         }
-
-   
 
         [HttpGet]
-        public async Task<IEnumerable<DocumentDto>> GetDocuments(string userName, string? type, string? state)
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(string userName, string? type, string? state)
         {
-            NameValueCollection queryPairs = System.Web.HttpUtility.ParseQueryString(string.Empty);
+            var queryParameters = new DocumentListQueryParameters()
+            {
+                UserName = userName,
+                Type = type,
+                State = state   
+            };
 
-            queryPairs.Add("username", userName);
-            queryPairs.Add("type", type);
-            queryPairs.Add("state", state);
+            var response = await _documentService.FetchDocumentsAsync(queryParameters);
+            
+            if (!response.IsSuccessStatusCode)
+                return BadRequest();
 
-            string query = string.Empty;
-            if (queryPairs.Count > 0)
-                query = "?" + queryPairs.ToString();   
-
-            string uri = _baseApiRoute + "documents" + query;
-          
-            var result = await _httpClient.GetAsync(uri);
-            return await result.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>();
-        }
-
+            return Ok(await response.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>());
+       }
 
         [HttpPut]
-        public async Task<IEnumerable<DocumentDto>> UpdateDocuments(DocumentListStatusUpdateParameters updateParameters)
+        public async Task<ActionResult> UpdateDocuments(DocumentListStatusUpdateParameters updateParameters)
         {
-            var updateParametersJson = new StringContent(
-                  JsonSerializer.Serialize(updateParameters),
-                  Encoding.UTF8,
-                  Application.Json);
+            var response = await _documentService.UpdateDocumentsAsync(updateParameters);
 
-            string uri = _baseApiRoute + "documents" ;
-            var httpResponseMessage = await _httpClient.PutAsync(uri, updateParametersJson);
+            if (!response.IsSuccessStatusCode)
+                return BadRequest();
 
-            httpResponseMessage.EnsureSuccessStatusCode();
-
-            return await httpResponseMessage.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>();
+            return Ok(response);
         }
     }
 }

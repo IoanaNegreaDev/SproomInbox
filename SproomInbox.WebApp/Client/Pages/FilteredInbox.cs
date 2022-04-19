@@ -1,5 +1,5 @@
-﻿using SproomInbox.API.Utils.Parametrization;
-using SproomInbox.WebApp.Shared.Resources;
+﻿using SproomInbox.WebApp.Shared.Resources;
+using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Net.Http.Json;
 
 namespace SproomInbox.WebApp.Client.Pages
