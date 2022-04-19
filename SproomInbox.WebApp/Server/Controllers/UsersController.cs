@@ -5,14 +5,14 @@ namespace SproomInbox.WebApp.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private static HttpClient _httpClient = new HttpClient();
 
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<UsersController> _logger;
         private readonly string _baseApiRoute;
 
-        public UserController(IConfiguration appConfig, ILogger<UserController> logger)
+        public UsersController(IConfiguration appConfig, ILogger<UsersController> logger)
         {
             _logger = logger;
             _baseApiRoute = appConfig.GetSection("ConnectionStrings:SproomDocumentsApiV1.0").Value;

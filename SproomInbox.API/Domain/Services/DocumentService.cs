@@ -16,7 +16,7 @@ namespace SproomInbox.API.Domain.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PagedList<Document>> ListDocumentsAsync(DocumentsQueryParameters queryParameters)
+        public async Task<PagedList<Document>> ListDocumentsAsync(DocumentListQueryParameters queryParameters)
         {
             return await _unitOfWork.DocumentRepository.ListAsync(queryParameters);
         }

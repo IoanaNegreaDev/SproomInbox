@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using SproomInbox.API.Utils.Parametrization;
 using SproomInbox.WebApp.Shared.Resources;
+using SproomInbox.WebApp.Shared.Resources.Parametrization;
+using System.Collections.Specialized;
 using System.Text;
 using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
@@ -8,41 +11,35 @@ namespace SproomInbox.WebApp.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DocumentController : ControllerBase
+    public class DocumentsController : ControllerBase
     {
         private static HttpClient _httpClient = new HttpClient();
 
-        private readonly ILogger<DocumentController> _logger;
+        private readonly ILogger<DocumentsController> _logger;
         private readonly string _baseApiRoute;
 
-        public DocumentController(IConfiguration appConfig, ILogger<DocumentController> logger)
+        public DocumentsController(IConfiguration appConfig, ILogger<DocumentsController> logger)
         {
             _logger = logger;
             _baseApiRoute = appConfig.GetSection("ConnectionStrings:SproomDocumentsApiV1.0").Value;
         }
 
+   
+
         [HttpGet]
         public async Task<IEnumerable<DocumentDto>> GetDocuments(string userName, string? type, string? state)
         {
-            string filterString = string.Empty;
-            if (!string.IsNullOrEmpty(userName))
-                filterString = $"?username={userName}";
-            else
-                throw new Exception("UserName is required.");
+            NameValueCollection queryPairs = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-            if (!string.IsNullOrEmpty(type))
-                if (filterString == string.Empty)
-                   filterString = $"?type={type}";
-                else
-                  filterString += $"&type={type}";
+            queryPairs.Add("username", userName);
+            queryPairs.Add("type", type);
+            queryPairs.Add("state", state);
 
-            if (!string.IsNullOrEmpty(state))
-                if (filterString == string.Empty)
-                    filterString = $"?state={state}";
-                else
-                    filterString += $"&state={state}";
+            string query = string.Empty;
+            if (queryPairs.Count > 0)
+                query = "?" + queryPairs.ToString();   
 
-            string uri = _baseApiRoute + "documents" + filterString;
+            string uri = _baseApiRoute + "documents" + query;
           
             var result = await _httpClient.GetAsync(uri);
             return await result.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>();
@@ -50,7 +47,7 @@ namespace SproomInbox.WebApp.Server.Controllers
 
 
         [HttpPut]
-        public async Task<IEnumerable<DocumentDto>> UpdateDocuments(DocumentListUpdateParameters updateParameters)
+        public async Task<IEnumerable<DocumentDto>> UpdateDocuments(DocumentListStatusUpdateParameters updateParameters)
         {
             var updateParametersJson = new StringContent(
                   JsonSerializer.Serialize(updateParameters),

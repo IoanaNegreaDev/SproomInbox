@@ -1,4 +1,4 @@
-﻿namespace SproomInbox.API.Utils.Paging
+﻿namespace SproomInbox.WebApp.Shared.Resources.Parametrization.Paging
 {
     public class PagedListMetadata
     {

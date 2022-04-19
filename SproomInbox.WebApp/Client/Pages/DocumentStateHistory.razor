@@ -1,10 +1,10 @@
 ﻿@page "/documentstatehistory/{DocumentId}"
 
-<h4 class="page-title">Status History for document @DocumentId</h4>
+<h4 class="page-title">Status History for document @Document.Id</h4>
 
-@if (_statusHistory != null)
+@if (Document.StateHistory != null)
 {
-    <p>There are @_statusHistory.Count status shanges</p>
+    <p>There are @Document.StateHistory.Count status shanges</p>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -13,7 +13,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var statusChange in _statusHistory)
+            @foreach (var statusChange in Document.StateHistory)
             {
                 <tr>
                     <td>@statusChange.Timestamp</td>

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
+using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 
 namespace SproomInbox.API.Utils.Paging
 { 

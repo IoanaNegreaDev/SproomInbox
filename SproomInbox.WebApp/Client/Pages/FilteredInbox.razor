@@ -1,4 +1,5 @@
 ﻿@page "/filteredinbox"
+@using SproomInbox.API.Utils.Parametrization
 @using SproomInbox.WebApp.Shared.Resources
 @inject HttpClient Http
 
@@ -7,9 +8,9 @@
 @if (_users != null)
 {
     <section class="state-selector">
-        <EditForm Model=@Document>
+        <EditForm Model=@FilterParameters>
             <label for="filters">Filters:   </label>            
-            <InputSelect id="statusSelectionUser" @bind-Value = "@UserNameFilter" @onclick="() => _needsRefreshing = true">
+            <InputSelect id="statusSelectionUser" @bind-Value = "@FilterParameters.UserName" @onclick="() => _needsRefreshing = true">
                 <option value=@string.Empty>UserName</option>
                 @foreach (var user in _users)
                 {
@@ -17,13 +18,13 @@
                 }                                       
                 </InputSelect>   
                 
-                <InputSelect id="statusSelection" @bind-Value = "@DocumentTypeFilter" @onclick="() => _needsRefreshing = true">
+                <InputSelect id="statusSelection" @bind-Value = "@FilterParameters.Type" @onclick="() => _needsRefreshing = true">
                     <option value=@String.Empty>Any type</option>
                     <option value="@(DocumentTypeDto.Invoice)">Invoice</option>
                     <option value="@(DocumentTypeDto.CreditNote)">CreditNote</option>                    
                 </InputSelect>   
                 
-                <InputSelect id="statusSelection" @bind-Value = "@DocumentStateFilter" @onclick="() => _needsRefreshing = true">
+                <InputSelect id="statusSelection" @bind-Value = "@FilterParameters.State" @onclick="() => _needsRefreshing = true">
                     <option value=@String.Empty>Any status</option>
                     <option value="@(StateDto.Received)">Received</option>
                     <option value="@(StateDto.Approved)">Approved</option>                    
@@ -38,10 +39,9 @@ else {
 
 @if (_needsRefreshing)
 {
-    <Inbox UserNameFilter=@UserNameFilter DocumentTypeFilter=@DocumentTypeFilter DocumentStateFilter=@DocumentStateFilter />
+    <Inbox FilterParameters=FilterParameters />
     _needsRefreshing = false;
 }
-
 @code {
     bool _needsRefreshing = false;
 } 

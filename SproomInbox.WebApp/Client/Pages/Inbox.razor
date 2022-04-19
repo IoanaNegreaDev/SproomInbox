@@ -1,4 +1,4 @@
-﻿@page "/inbox/{UserNameFilter}/{DocumentTypeFilter}/{DocumentStateFilter}"
+﻿@page "/inbox/{FilterParameters}"
 @using SproomInbox.WebApp.Shared.Resources
 @using System.Threading;
 @inject HttpClient Http
@@ -8,10 +8,9 @@
     <p></p>
     <p>@_documents.Count documents. @_selectedIds.Count are selected.</p>
 
-    <table class="table table-striped">
+    <table class="table table-striped" align="left">
         <thead class="thead-light">
-            <tr>
-                <th>&nbsp;</th>
+            <tr>             
                 <th>Id</th>
                 <th>Type</th>
                 <th>Status</th>
@@ -22,9 +21,7 @@
         <tbody>
             @foreach (var document in _documents)
             {
-                if (!IsVisible(document))
-                    continue;
-                <tr>
+                <tr @onclick="() => _documentView[document.Id] = ! _documentView[document.Id]">
                     <td>
                         <input class="custom-control-input" id="customCheck"
                                type="checkbox" 
@@ -36,12 +33,29 @@
                     <td>@document.Type</td>
                     <td>@document.State</td>
                     <td>@document.CreationDate.ToShortDateString()</td>
-                    <td>
-                         <a href="@($"documentstatehistory/{document.Id}")" class="btn btn-primary border-radius: 30px alert-primary">
-                            History
-                        </a>
-                    </td>
-                </tr>
+                 </tr>
+                 @if (_documentView[document.Id])
+                 {      
+                     <td></td>
+                       <table class="child-grid" cellpadding=5 align="left" >
+
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var statusChange in document.StateHistory)
+                            {
+                                <tr>
+                                    <td>@statusChange.Timestamp</td>
+                                    <td>@statusChange.State</td>
+                                </tr>
+                            }
+                       </tbody>
+                    </table>                  
+                 }
             }
         </tbody>
     </table>

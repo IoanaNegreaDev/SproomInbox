@@ -1,8 +1,8 @@
-﻿using SproomInbox.API.Utils.Paging;
+﻿using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 
 namespace SproomInbox.API.Utils.Parametrization
 {
-    public class DocumentsQueryParameters
+    public class DocumentListQueryParameters
     {
         public string UserName { get; set; } = String.Empty;
         public string Id { get; set; } = String.Empty;

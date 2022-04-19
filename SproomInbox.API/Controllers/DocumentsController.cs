@@ -5,6 +5,7 @@ using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Parametrization;
 using SproomInbox.WebApp.Shared.Resources;
+using SproomInbox.WebApp.Shared.Resources.Parametrization;
 
 namespace SproomInbox.API
 {
@@ -36,7 +37,7 @@ namespace SproomInbox.API
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(
-                                                                    [FromQuery] DocumentsQueryParameters queryParameters)
+                                                                    [FromQuery] DocumentListQueryParameters queryParameters)
         {
             var documentsPagedList = await _documentsService.ListDocumentsAsync(queryParameters);
             var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(documentsPagedList);
@@ -87,7 +88,7 @@ namespace SproomInbox.API
         }
 
         [HttpPut]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> Update(DocumentListUpdateParameters updateParameters)
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> Update(DocumentListStatusUpdateParameters updateParameters)
         { 
             List<DocumentsFindByIdParameters > findByIdParametersList = new List< DocumentsFindByIdParameters >();
             foreach (var id in updateParameters.DocumentIds)
