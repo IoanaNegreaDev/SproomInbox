@@ -1,5 +1,6 @@
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using Marvin.Cache.Headers;
 using Microsoft.EntityFrameworkCore;
 using SproomInbox.API.Domain;
 using SproomInbox.API.Domain.Repositories;
@@ -33,7 +34,29 @@ builder.Services.AddControllers()
                     options.ImplicitlyValidateRootCollectionElements = true;
                     options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                 });
+/*
+builder.Services.AddHttpCacheHeaders(expirationModelOptionsAction =>
+             {
+              //Default:60
+          //Reflected in the time difference between expires and last-modified in Hearder
+          expirationModelOptionsAction.MaxAge = 50;
+        //Default:Public
+          expirationModelOptionsAction.CacheLocation = CacheLocation.Public;
+          }
+      , validationModelOptionsAction =>
+      {
+              validationModelOptionsAction.MustRevalidate = true; //Default:false
 
+          //Default:[Accept,Accept-Language,Accept-Encoding]
+          var vary = validationModelOptionsAction.Vary.ToList();
+              vary.AddRange(new string[] { "Id", "Age" });        //Pay attention to this detail
+              validationModelOptionsAction.Vary = vary;
+
+          validationModelOptionsAction.VaryByAll = false;     //Default:false
+          }
+      )*/
+
+//builder.Services.AddResponseCaching();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,6 +74,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
+//app.UseResponseCaching();
+
+app.UseRouting();
+
+//app.UseHttpCacheHeaders();
 
 app.MapControllers();
 

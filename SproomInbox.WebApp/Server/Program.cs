@@ -9,6 +9,8 @@ builder.Services.AddHttpClient<IDocumentsFromApiService, DocumentsFromApiService
 builder.Services.AddHttpClient<IUsersFromApiService, UsersFromApiService>(client =>
                                                                     client.BaseAddress =
                                                                     new Uri(builder.Configuration.GetConnectionString("SproomDocumentsApiV1.0")));
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 

@@ -1,4 +1,4 @@
-﻿
+﻿using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Collections.Specialized;
 using System.Text;
@@ -10,12 +10,16 @@ namespace SproomInbox.WebApp.Server.Services
     public class DocumentsFromApiService : IDocumentsFromApiService
     {
         private readonly HttpClient _httpClient;
-        public DocumentsFromApiService(HttpClient httpClient)
+        private readonly IEmailService _emailService;
+        private readonly string _baseAddress;
+        public DocumentsFromApiService(HttpClient httpClient, IEmailService emailService)
         {
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
 
             _httpClient = httpClient;
+            _emailService = emailService;
+            _baseAddress = _httpClient.BaseAddress + "documents";
         }
 
         public async Task<HttpResponseMessage> FetchDocumentsAsync(DocumentListQueryParameters queryParameters)
@@ -32,7 +36,7 @@ namespace SproomInbox.WebApp.Server.Services
             if (queryPairs.Count > 0)
                 query = "?" + queryPairs.ToString();
 
-            string uri = _httpClient.BaseAddress + "documents" + query;
+            string uri = _baseAddress + query;
 
             var httpResponseMessage = await _httpClient.GetAsync(uri);
 
@@ -41,13 +45,22 @@ namespace SproomInbox.WebApp.Server.Services
 
         public async Task<HttpResponseMessage> UpdateDocumentsAsync(DocumentListStatusUpdateParameters updateParameters)
         {
-            var updateParametersJson = new StringContent(
-            JsonSerializer.Serialize(updateParameters),
-            Encoding.UTF8,
-            Application.Json);
+            var enumValueParsingSucceded = Enum.TryParse<StateDto>(updateParameters.NewState, out var stateValue);
+            if (!enumValueParsingSucceded ||
+                 stateValue == StateDto.Received)
+                throw new InvalidOperationException($"Invalid document state {updateParameters.NewState}.");
 
-            string uri = _httpClient.BaseAddress + "documents";
-            var httpResponseMessage = await _httpClient.PutAsync(uri, updateParametersJson);
+            var updateParametersJson = new StringContent(
+                                            JsonSerializer.Serialize(updateParameters),
+                                            Encoding.UTF8,
+                                            Application.Json);
+
+            var httpResponseMessage = await _httpClient.PutAsync(_baseAddress, updateParametersJson);
+
+            
+            if (httpResponseMessage.IsSuccessStatusCode &&
+                stateValue == StateDto.Approved)
+                _emailService.SendApprovedDocumentsEmail(updateParameters);
 
             return httpResponseMessage;
         }

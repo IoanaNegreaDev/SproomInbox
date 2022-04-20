@@ -9,16 +9,15 @@ namespace SproomInbox.WebApp.Client.Pages
     public partial class Inbox
     {
         [Inject]
-        public  IDocumentsFromWebServerService DocumentService { get; set; }
-
-        private IList<DocumentDto>? _documents;
-        private List<string> _selectedIds { get; set; } = new List<string>();
-
-        private Dictionary<string, bool> _documentExpanded = new Dictionary<string, bool>();
-        private Dictionary<string, bool> _documentChecked = new Dictionary<string, bool>();
+        public IDocumentsFromWebServerService DocumentService { get; set; }
 
         [Parameter]
         public DocumentListQueryParameters FilterParameters { get; set; } = new DocumentListQueryParameters();
+  
+        private IList<DocumentDto> _documents = new List<DocumentDto>();
+        private List<string> _selectedIds { get; set; } = new List<string>();
+        private Dictionary<string, bool> _documentExpanded = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _documentChecked = new Dictionary<string, bool>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -65,7 +64,6 @@ namespace SproomInbox.WebApp.Client.Pages
 
             var newState = Enum.GetName<StateDto>(StateDto.Approved);
             var response = await UpdateDocumentsAsync(newState);
-
             if (response.IsSuccessStatusCode)
                 UpdateDocumentsLocally(newState);
     

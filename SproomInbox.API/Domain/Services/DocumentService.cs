@@ -28,12 +28,16 @@ namespace SproomInbox.API.Domain.Services
         }
         public async Task<Document> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState)
         {
+            if (Enum.TryParse<State>(newState, true, out var newStateId) ||
+                Enum.IsDefined<State>(newStateId) ||
+                newStateId == State.Received)
+                throw new Exception($"Invalid new state for update :{newState}. Allowed update states: {String.Join(", ", Enum.GetNames<State>())}.");
+
             var dbDocument = await FindByIdAsync(findParameters);
             if (dbDocument == null)
                 throw new Exception($"Document with {findParameters.Id} not found.");
 
-            if (Enum.TryParse<State>(newState, true, out var newStateId) &&
-                Enum.IsDefined<State>(newStateId))
+              try
             {
                 var newDocumentState = new DocumentState()
                 {
@@ -47,8 +51,10 @@ namespace SproomInbox.API.Domain.Services
                 await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
                 _unitOfWork.SaveChanges();
             }
-
-
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update the database with {newState} state. Error: {ex.Message}.");
+            }
             return dbDocument;
         }
 

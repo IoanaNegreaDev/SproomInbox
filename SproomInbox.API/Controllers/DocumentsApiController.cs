@@ -1,7 +1,9 @@
 using AutoMapper;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
+using SproomInbox.API.Utils.Caching;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Parametrization;
 using SproomInbox.WebApp.Shared.Resources;
@@ -11,15 +13,15 @@ namespace SproomInbox.API
 {
     [ApiController]
     [Route("api/v1.0/documents")]
-    public class DocumentsController : ControllerBase
+    public class DocumentsApiController : ControllerBase
     {
-        private readonly ILogger<DocumentsController> _logger;
+        private readonly ILogger<DocumentsApiController> _logger;
         private readonly IDocumentService _documentsService;
         private readonly IMapper _mapper;
 
-        public DocumentsController(IDocumentService documentsService,
+        public DocumentsApiController(IDocumentService documentsService,
                                   IMapper mapper,
-                                  ILogger<DocumentsController> logger)
+                                  ILogger<DocumentsApiController> logger)
         {
             if (documentsService == null)
                 throw new ArgumentNullException(nameof(documentsService));
@@ -36,7 +38,9 @@ namespace SproomInbox.API
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(
+        [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
+        [HttpCacheValidation(MustRevalidate = true, NoCache =false, Vary = new[] { "Accept", "Accept-Language", "Accept-Encoding", "UserName", "Type", "State" })]
+    public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(
                                                                     [FromQuery] DocumentListQueryParameters queryParameters)
         {
             var documentsPagedList = await _documentsService.ListDocumentsAsync(queryParameters);
@@ -106,7 +110,7 @@ namespace SproomInbox.API
 
             var documents = await _documentsService.UpdateAsync(findByIdParametersList, updateParameters.NewState);
             if (documents == null)
-                return NotFound();
+                return BadRequest();
 
             var documentsDto = _mapper.Map<IEnumerable<Document>, IEnumerable<DocumentDto>>(documents);
             return Ok(documentsDto);

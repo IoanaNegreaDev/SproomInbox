@@ -5,13 +5,13 @@ using SproomInbox.WebApp.Shared.Resources;
 namespace SproomInbox.WebApp.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class UsersController : ControllerBase
+    [Route("users")]
+    public class UsersWebServerController : ControllerBase
     {
-        private readonly ILogger<UsersController> _logger;
+        private readonly ILogger<UsersWebServerController> _logger;
         private readonly IUsersFromApiService _usersService;
 
-        public UsersController(IUsersFromApiService usersService, ILogger<UsersController> logger)
+        public UsersWebServerController(IUsersFromApiService usersService, ILogger<UsersWebServerController> logger)
         {
             _logger = logger;
             _usersService = usersService;

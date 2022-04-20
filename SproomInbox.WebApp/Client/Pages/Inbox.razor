@@ -2,7 +2,7 @@
 @using SproomInbox.WebApp.Shared.Resources
 @using System.Threading;
 
-@if (_documents != null)
+@if (_documents.Count != 0)
 {
     <p></p>
     <p>@_documents.Count documents. @_selectedIds.Count are selected.</p>
@@ -21,12 +21,12 @@
         <tbody>
             @foreach (var document in _documents)
             {
-                <tr style="background:@(@IsDocumentFinalState(@document.State) == true ? "GhostWhite" :"White" );"
+                <tr style="background:@(@IsDocumentFinalState(@document.State) == true ? "AliceBlue" :"GhostWhite" );"
                     @onclick="() => _documentExpanded[document.Id] = ! _documentExpanded[document.Id]">
                     <td>
                         <input class="custom-control-input" id="customCheck"
                                type="checkbox" 
-
+                               checked=@_documentChecked[@document.Id]
                                disabled=@IsDocumentFinalState(@document.State)                           
                                @onchange="eventArgs => { OnCheckboxClicked(document.Id, eventArgs.Value); }" 
                         />

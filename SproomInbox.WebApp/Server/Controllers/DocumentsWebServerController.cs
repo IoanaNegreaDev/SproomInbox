@@ -6,12 +6,12 @@ using SproomInbox.WebApp.Shared.Resources.Parametrization;
 namespace SproomInbox.WebApp.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class DocumentsController : ControllerBase
+    [Route("documents")]
+    public class DocumentsWebServerController : ControllerBase
     {
-        private readonly ILogger<DocumentsController> _logger;
+        private readonly ILogger<DocumentsWebServerController> _logger;
         private readonly IDocumentsFromApiService _documentService;
-        public DocumentsController(IDocumentsFromApiService documentService, ILogger<DocumentsController> logger)
+        public DocumentsWebServerController(IDocumentsFromApiService documentService, ILogger<DocumentsWebServerController> logger)
         {
             _logger = logger;
             _documentService = documentService;
@@ -32,7 +32,9 @@ namespace SproomInbox.WebApp.Server.Controllers
             if (!response.IsSuccessStatusCode)
                 return BadRequest();
 
-            return Ok(await response.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ?? Enumerable.Empty<DocumentDto>());
+            var translatedResponse = await response.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ??
+                                            Enumerable.Empty<DocumentDto>();
+            return Ok(translatedResponse);
        }
 
         [HttpPut]
