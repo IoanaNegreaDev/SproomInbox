@@ -6,6 +6,7 @@ using SproomInbox.API.Domain;
 using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.DtoMapper;
+using SproomInbox.API.Utils.Paging;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();  
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IPaginationUriBuilder, PaginationUriBuilder>();
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson()

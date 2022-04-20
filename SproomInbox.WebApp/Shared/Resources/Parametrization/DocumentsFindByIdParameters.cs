@@ -1,4 +1,4 @@
-﻿namespace SproomInbox.API.Utils.Parametrization
+﻿namespace SproomInbox.WebApp.Shared.Resources.Parametrization
 {
     public class DocumentsFindByIdParameters
     {    

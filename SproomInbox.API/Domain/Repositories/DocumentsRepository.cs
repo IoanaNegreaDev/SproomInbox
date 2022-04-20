@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Utils.Paging;
-using SproomInbox.API.Utils.Parametrization;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 
@@ -39,7 +38,7 @@ namespace SproomInbox.API.Domain.Repositories
             collection = ApplySearch(queryParameters.Search, collection);
             collection = collection.Include(document => document.StateHistory);
 
-            return await PagedList<Document>.Create(collection, queryParameters.Paging);
+            return await PagedList<Document>.Create(collection, queryParameters.Page);
         }
 
         private IQueryable<Document> ApplyFilter(DocumentListQueryParameters queryParameters, 

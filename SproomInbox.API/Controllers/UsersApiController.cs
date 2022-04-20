@@ -38,9 +38,16 @@ namespace SproomInbox.API.Controllers
         [HttpCacheValidation(MustRevalidate = true, NoCache = false)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            var users = await _userService.ListUsersAsync();
-            var usersDtoList = _mapper.Map <IEnumerable<User>, IEnumerable<UserDto>>(users);
-            return Ok(usersDtoList);
+            try
+            {
+                var users = await _userService.ListUsersAsync();
+                var usersDtoList = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
+                return Ok(usersDtoList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
