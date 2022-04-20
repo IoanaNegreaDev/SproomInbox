@@ -3,7 +3,6 @@ using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
-using SproomInbox.API.Utils.Caching;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Parametrization;
 using SproomInbox.WebApp.Shared.Resources;

@@ -32,6 +32,7 @@ namespace SproomInbox.API.Domain
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
 
+
             modelBuilder.Entity<Document>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -84,57 +85,24 @@ namespace SproomInbox.API.Domain
                 }
             );
 
-            modelBuilder.Entity<Document>().HasData
-            (
-                new Document { Id = Guid.NewGuid(), 
-                               UserId = 1,
-                               TypeId = DocumentType.Invoice, 
-                               StateId = State.Received, 
-                               CreationDate = DateTime.Now.AddDays(-3), 
-                               FileReference = "\\SproomDocumentFiles\\Invoices\\" },
+            Random rnd = new Random();
+            List<Document> seedDocuments = new List<Document>();
+            for (int i = 0; i < 300; i++)
+            {
+                var document = new Document
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = rnd.Next(1, 4),
+                    TypeId = (DocumentType)rnd.Next(1, 3),
+                    StateId = State.Received,
+                    CreationDate = DateTime.Now.AddDays(-rnd.Next(1, 21)),
+                    FileReference = "\\SproomDocumentFiles\\"
+                };
+                seedDocuments.Add(document);
+            }
 
-                new Document { Id = Guid.NewGuid(), 
-                                UserId = 1,
-                                TypeId = DocumentType.Invoice,
-                                StateId = State.Received, 
-                                CreationDate = DateTime.Now.AddDays(-5), 
-                                FileReference = "\\SproomDocumentFiles\\Invoices\\" },
-
-                new Document { Id = Guid.NewGuid(),
-                                UserId = 1,
-                                TypeId = DocumentType.Invoice,
-                                StateId = State.Received,
-                                CreationDate = DateTime.Now.AddDays(-1),
-                                FileReference = "\\SproomDocumentFiles\\Invoices\\" },
-
-                new Document { Id = Guid.NewGuid(),
-                                UserId = 2,     
-                                TypeId = DocumentType.Invoice, 
-                                StateId = State.Received, 
-                                CreationDate = DateTime.Now.AddDays(-1),
-                                FileReference = "\\SproomDocumentFiles\\Invoices\\" },
-
-                new Document { Id = Guid.NewGuid(),
-                                UserId = 2,     
-                                TypeId = DocumentType.CreditNote, 
-                                StateId = State.Received, 
-                                CreationDate = DateTime.Now.AddDays(-10), 
-                                FileReference = "\\SproomDocumentFiles\\CreditNotes\\" },
-
-                new Document { Id = Guid.NewGuid(), 
-                                UserId = 2,     
-                                TypeId = DocumentType.CreditNote, 
-                                StateId = State.Received, 
-                                CreationDate = DateTime.Now.AddDays(-4), 
-                                FileReference = "\\SproomDocumentFiles\\CreditNotes\\" },
-
-                new Document { Id = Guid.NewGuid(),
-                                UserId = 3,     
-                                TypeId = DocumentType.CreditNote, 
-                                StateId = State.Received,
-                                CreationDate = DateTime.Now, 
-                                FileReference = "\\SproomDocumentFiles\\CreditNotes\\" }
-            );          
+            modelBuilder.Entity<Document>().HasData(seedDocuments);
+       
         }
     }
 }
