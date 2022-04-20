@@ -27,8 +27,8 @@ namespace SproomInbox.API.Domain.Services
         }
         public async Task<Document> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState)
         {
-            if (Enum.TryParse<State>(newState, true, out var newStateId) ||
-                Enum.IsDefined<State>(newStateId) ||
+            if (!Enum.TryParse<State>(newState, true, out var newStateId) ||
+                !Enum.IsDefined<State>(newStateId) ||
                 newStateId == State.Received)
                 throw new Exception($"Invalid new state for update :{newState}. Allowed update states: {String.Join(", ", Enum.GetNames<State>())}.");
 
@@ -36,7 +36,10 @@ namespace SproomInbox.API.Domain.Services
             if (dbDocument == null)
                 throw new Exception($"Document with {findParameters.Id} not found.");
 
-              try
+            if (dbDocument.StateId != State.Received)
+                throw new Exception($"Document {findParameters.Id} state cannot be modified.");
+
+            try
             {
                 var newDocumentState = new DocumentState()
                 {
@@ -59,6 +62,11 @@ namespace SproomInbox.API.Domain.Services
 
         public async Task<IEnumerable<Document>> UpdateAsync(List<DocumentsFindByIdParameters> findParametersList, string newState)
         {
+            if (!Enum.TryParse<State>(newState, true, out var newStateId) ||
+                !Enum.IsDefined<State>(newStateId) ||
+                newStateId == State.Received)
+               throw new Exception($"Invalid new state for update :{newState}. Allowed update states: {String.Join(", ", Enum.GetNames<State>())}.");
+
             List<Document> updatedDocuments= new List<Document>();
 
             foreach (var findParameters in findParametersList)
@@ -66,24 +74,23 @@ namespace SproomInbox.API.Domain.Services
                 var dbDocument = await FindByIdAsync(findParameters);
                 if (dbDocument == null)
                     throw new Exception($"Document with {findParameters.Id} not found.");
-
-                if (Enum.TryParse<State>(newState, true, out var newStateId) &&
-                    Enum.IsDefined<State>(newStateId))
+            
+                if (dbDocument.StateId != State.Received)
+                    throw new Exception($"Document {findParameters.Id} state cannot be modified.");
+           
+                var newDocumentState = new DocumentState()
                 {
-                    var newDocumentState = new DocumentState()
-                    {
-                        DocumentId = dbDocument.Id,
-                        Timestamp = DateTime.Now,
-                        StateId = dbDocument.StateId,
-                    };
+                    DocumentId = dbDocument.Id,
+                    Timestamp = dbDocument.CreationDate,
+                    StateId = dbDocument.StateId,
+                };
 
-                    dbDocument.StateId = newStateId;
-                    _unitOfWork.DocumentRepository.Update(dbDocument);
-                    await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
+                dbDocument.StateId = newStateId;
+                dbDocument.CreationDate = DateTime.Now;
+                _unitOfWork.DocumentRepository.Update(dbDocument);
+                await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
                     
-                    updatedDocuments.Add(dbDocument);
-
-                }
+                updatedDocuments.Add(dbDocument);
             }
 
             if (updatedDocuments.Count > 0)

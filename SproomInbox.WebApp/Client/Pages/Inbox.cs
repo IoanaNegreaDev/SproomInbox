@@ -64,12 +64,9 @@ namespace SproomInbox.WebApp.Client.Pages
 
             var newState = Enum.GetName<StateDto>(StateDto.Approved);
             var response = await UpdateDocumentsAsync(newState);
-            if (response.IsSuccessStatusCode)
-                UpdateDocumentsLocally(newState);
-    
+
             response = await DocumentService.FetchDocumentsAsync(FilterParameters);
-            if (response.IsSuccessStatusCode)
-                _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
+            _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
 
             foreach (var documentId in _documentChecked.Keys)
                 _documentChecked[documentId] = false;
@@ -88,9 +85,6 @@ namespace SproomInbox.WebApp.Client.Pages
             var newState = Enum.GetName<StateDto>(StateDto.Rejected);
 
             var response = await UpdateDocumentsAsync(newState);
-
-            if (response.IsSuccessStatusCode)
-                UpdateDocumentsLocally(newState);
 
             response = await DocumentService.FetchDocumentsAsync(FilterParameters);
             if (response.IsSuccessStatusCode)
