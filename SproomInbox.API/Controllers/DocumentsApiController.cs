@@ -47,7 +47,6 @@ namespace SproomInbox.API
         {
             // user whould be authenticated
             // var authenticatedUserId = HttpContext.User.Identity.Name;
-
             var response = await _documentsService.ListDocumentsAsync(queryParameters);
             if (!response.Success)
                 return StatusCode((int)response.StatusCode, response.Message);

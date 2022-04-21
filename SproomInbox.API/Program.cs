@@ -6,6 +6,7 @@ using SproomInbox.API.Domain;
 using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.DtoMapper;
+using SproomInbox.API.Utils.ErrorHandling;
 using SproomInbox.API.Utils.Paging;
 using System.Reflection;
 
@@ -63,6 +64,7 @@ app.UseAuthorization();
 app.UseRouting();
 
 //app.UseHttpCacheHeaders();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();
 
