@@ -37,17 +37,15 @@ namespace SproomInbox.API.Controllers
         [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
         [HttpCacheValidation(MustRevalidate = true, NoCache = false)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
-        {
-            try
-            {
-                var users = await _userService.ListUsersAsync();
-                var usersDtoList = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
-                return Ok(usersDtoList);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+        {     
+            var response = await _userService.ListUsersAsync();
+            if (!response.Success)
+                return StatusCode((int)response.StatusCode, response.Message);
+
+            var users = response._entity;
+            var usersDtoList = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
+            return Ok(usersDtoList);
+           
         }
     }
 }

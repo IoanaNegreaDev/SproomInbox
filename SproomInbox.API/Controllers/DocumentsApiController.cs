@@ -43,16 +43,17 @@ namespace SproomInbox.API
         [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
         [HttpCacheValidation(MustRevalidate = true, NoCache =false, Vary = new[] { "Accept", "Accept-Language", "Accept-Encoding", "UserName", "Type", "State" })]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsAsync(
-                                                                    [FromQuery] DocumentsQueryParameters queryParameters)
+                                                                    [FromQuery]DocumentsQueryParameters queryParameters)
         {
             // user whould be authenticated
             // var authenticatedUserId = HttpContext.User.Identity.Name;
 
-            var listResponse = await _documentsService.ListDocumentsAsync(queryParameters);
-            if (!listResponse.Success)
-                return StatusCode((int)listResponse.StatusCode, listResponse.Message);
+            var response = await _documentsService.ListDocumentsAsync(queryParameters);
+            if (!response.Success)
+                return StatusCode((int)response.StatusCode, response.Message);
 
-            var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(listResponse._entity);
+            var documents = response._entity;
+            var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(documents);
 
              if (documentsDtoPagedList.Count == 0)
                 return NoContent();
@@ -60,7 +61,6 @@ namespace SproomInbox.API
             AddPaginationInRequestHeader("GetDocuments",
                                          queryParameters,
                                          documentsDtoPagedList);
-
             return Ok(documentsDtoPagedList);          
         }
 

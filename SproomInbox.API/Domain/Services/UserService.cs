@@ -1,5 +1,7 @@
 ﻿using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Repositories;
+using SproomInbox.API.Utils.ErrorHandling;
+using SproomInbox.API.Utils.Paging;
 
 namespace SproomInbox.API.Domain.Services
 {
@@ -13,9 +15,14 @@ namespace SproomInbox.API.Domain.Services
 
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<User>> ListUsersAsync()
+        public async Task<Status<IEnumerable<User>>> ListUsersAsync()
         {
-            return await _unitOfWork.UserRepository.ListAsync();
+            var response = await _unitOfWork.UserRepository.ListAsync();
+
+            if (response == null)
+                throw new Exception("Failed to get users. Internal error.");
+
+            return new Status<IEnumerable<User>>(response);
         }
     }
 }

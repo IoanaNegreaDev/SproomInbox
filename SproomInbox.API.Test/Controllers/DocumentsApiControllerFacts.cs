@@ -1,5 +1,4 @@
 using AutoMapper;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,33 +28,29 @@ namespace SproomInbox.API.Test
             Mock<IPaginationUriBuilder> paginationUriBuilderMock = new Mock<IPaginationUriBuilder>();
             Mock<IMapper> mapperMock = new Mock<IMapper>();
 
-            DocumentsApiController documentController = new DocumentsApiController(null,
-                                                                                   paginationUriBuilderMock.Object,
-                                                                                   mapperMock.Object,
-                                                                                   loggerMock.Object);
-            Assert.Null(documentController);
-
-            documentController = new DocumentsApiController(documentServiceMock.Object,
-                                                                null,
-                                                                mapperMock.Object,
-                                                                loggerMock.Object);
-            Assert.Null(documentController);
-
-            documentController = new DocumentsApiController(documentServiceMock.Object,
-                                                                paginationUriBuilderMock.Object,
-                                                                null,
-                                                                loggerMock.Object);
-            Assert.Null(documentController);
-
-            documentController = new DocumentsApiController(documentServiceMock.Object,
+            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(null,
                                                                 paginationUriBuilderMock.Object,
                                                                 mapperMock.Object,
-                                                                null);
-            Assert.Null(documentController);
+                                                                loggerMock.Object));
+
+            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(documentServiceMock.Object,
+                                                             null,
+                                                             mapperMock.Object,
+                                                             loggerMock.Object));
+
+            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(documentServiceMock.Object,
+                                                             paginationUriBuilderMock.Object,
+                                                             null,
+                                                             loggerMock.Object));
+
+            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(documentServiceMock.Object,
+                                                             paginationUriBuilderMock.Object,
+                                                             mapperMock.Object,
+                                                             null));         
         }
 
         [Fact]
-        public async void GetDocuments_ValidParameters_ReturnsPagedList_StatusOK()
+        public async void GetDocuments_ValidParameters_ReturnsPagedList_And_StatusOK()
         {
             #region setup
             Mock<ILogger<DocumentsApiController>> loggerMock = new Mock<ILogger<DocumentsApiController>>();
@@ -141,6 +136,7 @@ namespace SproomInbox.API.Test
            
             PagedList<Document> mockPagedList = new PagedList<Document>(mockList, new PagedListMetadata());
             PagedList<DocumentDto> mockPagedListDto = new PagedList<DocumentDto>(mockListDto, new PagedListMetadata());
+
             var mocServiceReturnStatusOk = new Status<PagedList<Document>>(mockPagedList);
             var mockDtoReturnStatusOk = new Status<PagedList<DocumentDto>>(mockPagedListDto);
 

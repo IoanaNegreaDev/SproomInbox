@@ -1,9 +1,10 @@
 ﻿using SproomInbox.API.Domain.Models;
+using SproomInbox.API.Utils.ErrorHandling;
 
 namespace SproomInbox.API.Domain.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> ListUsersAsync();
+        Task<Status<IEnumerable<User>>> ListUsersAsync();
     }
 }
