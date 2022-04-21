@@ -1,7 +1,9 @@
 ﻿using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Repositories;
+using SproomInbox.API.Utils.ErrorHandling;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
+using System.Net;
 
 namespace SproomInbox.API.Domain.Services
 {
@@ -16,28 +18,43 @@ namespace SproomInbox.API.Domain.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PagedList<Document>> ListDocumentsAsync(DocumentListQueryParameters queryParameters)
+        public async Task<Status<PagedList<Document>>> ListDocumentsAsync(DocumentListQueryParameters queryParameters)
         {
-            return await _unitOfWork.DocumentRepository.ListAsync(queryParameters);
+            var response = await _unitOfWork.DocumentRepository.ListAsync(queryParameters);
+            return new Status<PagedList<Document>>(response);
         }
-        public async Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters)
+        public async Task<Status<Document>> FindByIdAsync(DocumentsFindByIdParameters findParameters)
         {
-            var result = await _unitOfWork.DocumentRepository.FindByIdAsync(findParameters);
-            return result;
+            Document result = null; 
+            try
+            {
+                result = await _unitOfWork.DocumentRepository.FindByIdAsync(findParameters);
+            }
+            catch
+            {
+                return new Status<Document>(HttpStatusCode.InternalServerError, 
+                    $"Internal error ocurred while looking for document with id = {findParameters.Id}.");
+            }
+            if (result == null)
+                return new Status<Document>(HttpStatusCode.NotFound, $"Document with id = {findParameters.Id} not found.");
+
+            return new Status<Document>(result);
         }
-        public async Task<Document> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState)
+       /* public async Task<Status<Document>> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState)
         {
             if (!Enum.TryParse<State>(newState, true, out var newStateId) ||
                 !Enum.IsDefined<State>(newStateId) ||
                 newStateId == State.Received)
-                throw new Exception($"Invalid new state for update :{newState}. Allowed update states: {String.Join(", ", Enum.GetNames<State>())}.");
+                return new Status<Document>(HttpStatusCode.BadRequest,
+                  $"Invalid new state for update :{newState}. Allowed update states: {String.Join(", ", Enum.GetNames<State>())}.");
 
-            var dbDocument = await FindByIdAsync(findParameters);
-            if (dbDocument == null)
-                throw new Exception($"Document with {findParameters.Id} not found.");
+            var findResponse = await FindByIdAsync(findParameters);
+            if (!findResponse.Success)
+                return new Status<Document>(findResponse.StatusCode, findResponse.Message);
 
+            var dbDocument = findResponse._entity;
             if (dbDocument.StateId != State.Received)
-                throw new Exception($"Document {findParameters.Id} state cannot be modified.");
+                return new Status<Document>(HttpStatusCode.BadRequest, $"Document {findParameters.Id} state cannot be modified.");
 
             try
             {
@@ -53,50 +70,73 @@ namespace SproomInbox.API.Domain.Services
                 await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
                 _unitOfWork.SaveChanges();
             }
-            catch (Exception ex)
+            catch 
             {
-                throw new Exception($"Failed to update the database with {newState} state. Error: {ex.Message}.");
+                return new Status<Document>(HttpStatusCode.InternalServerError, $"Failed to update the database with the {newState} state. "); 
             }
-            return dbDocument;
-        }
 
-        public async Task<IEnumerable<Document>> UpdateAsync(List<DocumentsFindByIdParameters> findParametersList, string newState)
+            return new Status<Document>(dbDocument);
+        }*/
+
+        public async Task<Status<IEnumerable<Document>>> UpdateAsync(DocumentListStatusUpdateParameters listUpdate)
         {
-            if (!Enum.TryParse<State>(newState, true, out var newStateId) ||
+            if (!Enum.TryParse<State>(listUpdate.NewState, true, out var newStateId) ||
                 !Enum.IsDefined<State>(newStateId) ||
                 newStateId == State.Received)
-               throw new Exception($"Invalid new state for update :{newState}. Allowed update states: {String.Join(", ", Enum.GetNames<State>())}.");
+                return new Status<IEnumerable<Document>>(HttpStatusCode.BadRequest, 
+                    $"Invalid new state for update :{listUpdate.NewState}. Allowed update states: {String.Join(", ", Enum.GetNames<State>())}.");
 
-            List<Document> updatedDocuments= new List<Document>();
+            var updatedDocuments = new List<Document>();
 
-            foreach (var findParameters in findParametersList)
+            try
             {
-                var dbDocument = await FindByIdAsync(findParameters);
-                if (dbDocument == null)
-                    throw new Exception($"Document with {findParameters.Id} not found.");
-            
-                if (dbDocument.StateId != State.Received)
-                    throw new Exception($"Document {findParameters.Id} state cannot be modified.");
-           
-                var newDocumentState = new DocumentState()
+                foreach (var documentId in listUpdate.DocumentIds)
                 {
-                    DocumentId = dbDocument.Id,
-                    Timestamp = dbDocument.CreationDate,
-                    StateId = dbDocument.StateId,
-                };
+                    if (!Guid.TryParse(documentId, out var IdValue))
+                        return new Status<IEnumerable<Document>>(HttpStatusCode.BadRequest,
+                             $"Invalid state Id :{documentId}. Not a GUID value.");
 
-                dbDocument.StateId = newStateId;
-                dbDocument.CreationDate = DateTime.Now;
-                _unitOfWork.DocumentRepository.Update(dbDocument);
-                await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
-                    
-                updatedDocuments.Add(dbDocument);
+                    DocumentsFindByIdParameters findDocumentByIdParameters = new DocumentsFindByIdParameters()
+                    {
+                        Id = IdValue,
+                        UserName = listUpdate.UserName
+                    };
+
+                    var findResponse = await FindByIdAsync(findDocumentByIdParameters);
+                    if (!findResponse.Success)
+                        return new Status<IEnumerable<Document>>(findResponse.StatusCode, findResponse.Message);
+
+                    var dbDocument = findResponse._entity;
+                    if (dbDocument.StateId != State.Received)
+                        return new Status<IEnumerable<Document>>(HttpStatusCode.BadRequest,
+                            $"Document {documentId}'s state cannot be modified.");
+
+                    var newDocumentState = new DocumentState()
+                    {
+                        DocumentId = dbDocument.Id,
+                        Timestamp = dbDocument.CreationDate,
+                        StateId = dbDocument.StateId,
+                    };
+
+                    dbDocument.StateId = newStateId;
+                    dbDocument.CreationDate = DateTime.Now;
+
+                    _unitOfWork.DocumentRepository.Update(dbDocument);
+                    await _unitOfWork.DocumentStateRepository.AddAsync(newDocumentState);
+
+                    updatedDocuments.Add(dbDocument);
+                }
+
+                if (updatedDocuments.Count > 0)
+                    _unitOfWork.SaveChanges();
+            }
+            catch
+            {
+                return new Status<IEnumerable<Document>>(HttpStatusCode.InternalServerError, 
+                    $"Failed to update the documents with the {listUpdate.NewState} state. ");
             }
 
-            if (updatedDocuments.Count > 0)
-                _unitOfWork.SaveChanges();
-
-            return updatedDocuments;
+            return new Status<IEnumerable<Document>>(updatedDocuments);
         }
     }
 }

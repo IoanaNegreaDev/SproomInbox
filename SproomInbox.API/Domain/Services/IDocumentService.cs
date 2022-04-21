@@ -1,4 +1,5 @@
 ﻿using SproomInbox.API.Domain.Models;
+using SproomInbox.API.Utils.ErrorHandling;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 
@@ -6,9 +7,9 @@ namespace SproomInbox.API.Domain.Services
 {
     public interface IDocumentService
     {
-        Task<PagedList<Document>> ListDocumentsAsync(DocumentListQueryParameters queryParameters);
-        Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters);
-        Task<Document> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState);
-        Task<IEnumerable<Document>> UpdateAsync(List<DocumentsFindByIdParameters> findParametersList, string newState);
+        Task<Status<PagedList<Document>>> ListDocumentsAsync(DocumentListQueryParameters queryParameters);
+        Task<Status<Document>> FindByIdAsync(DocumentsFindByIdParameters findParameters);
+       // Task<Status<Document>> UpdateAsync(DocumentsFindByIdParameters findParameters, string newState);
+        Task<Status<IEnumerable<Document>>> UpdateAsync(DocumentListStatusUpdateParameters updateListParameters);
     }
 }

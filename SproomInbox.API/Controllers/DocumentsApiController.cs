@@ -39,114 +39,55 @@ namespace SproomInbox.API
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetDocuments")]
         [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
         [HttpCacheValidation(MustRevalidate = true, NoCache =false, Vary = new[] { "Accept", "Accept-Language", "Accept-Encoding", "UserName", "Type", "State" })]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsAsync(
                                                                     [FromQuery] DocumentListQueryParameters queryParameters)
         {
-            try
-            {
-                var documentsPagedList = await _documentsService.ListDocumentsAsync(queryParameters);
-                var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(documentsPagedList);
+            // user whould be authenticated
+            // var authenticatedUserId = HttpContext.User.Identity.Name;
 
-                AddPaginationInRequestHeader("GetRentables",
-                                                queryParameters,
-                                                documentsDtoPagedList);
-                return Ok(documentsDtoPagedList);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }       
+            var listResponse = await _documentsService.ListDocumentsAsync(queryParameters);
+            if (!listResponse.Success)
+                return StatusCode((int)listResponse.StatusCode, listResponse.Message);
+
+            var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(listResponse._entity);
+
+             if (documentsDtoPagedList.Count == 0)
+                return NoContent();
+
+            AddPaginationInRequestHeader("GetDocuments",
+                                         queryParameters,
+                                         documentsDtoPagedList);
+
+            return Ok(documentsDtoPagedList);          
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById(string id, string userName)
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById([FromQuery]  DocumentsFindByIdParameters findByIdParameters)
         {
-            if (!Guid.TryParse(id, out var documentId))
-                return BadRequest("Invalid Id value.");
-          
-            DocumentsFindByIdParameters findByIdParameters = new DocumentsFindByIdParameters()
-            {
-                Id = documentId,
-                UserName = userName
-            };
+            var response = await _documentsService.FindByIdAsync(findByIdParameters);        
+            if (!response.Success)
+                return StatusCode((int)response.StatusCode, response.Message);
 
-            try
-            {
-                var document = await _documentsService.FindByIdAsync(findByIdParameters);
-                if (document == null)
-                    return NotFound();
+            var document = response._entity;
+            if (document == null)
+                return NotFound();
 
-                var documentDto = _mapper.Map<Document, DocumentDto>(document);
-                return Ok(documentDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<DocumentDto>> Update(string id, string userName,
-                                                                         string newState)
-        {
-            if (!Guid.TryParse(id, out var documentId))
-                return BadRequest("Invalid Id value.");
-
-            DocumentsFindByIdParameters findByIdParameters = new DocumentsFindByIdParameters()
-            {
-                Id = documentId,
-                UserName = userName
-            };
-
-            try
-            {
-                var document = await _documentsService.UpdateAsync(findByIdParameters, newState);
-
-                if (document == null)
-                    return NotFound();
-
-                var documentDto = _mapper.Map<Document, DocumentDto>(document);
-                return Ok(documentDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var documentDto = _mapper.Map<Document, DocumentDto>(document);
+            return Ok(documentDto);
         }
 
         [HttpPut]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> Update(DocumentListStatusUpdateParameters updateParameters)
+        public async Task<ActionResult> Update( DocumentListStatusUpdateParameters updateParameters)
         { 
-            List<DocumentsFindByIdParameters > findByIdParametersList = new List< DocumentsFindByIdParameters >();
-            foreach (var id in updateParameters.DocumentIds)
-            {
-                if (!Guid.TryParse(id, out var documentId))
-                    return BadRequest("Invalid Id value.");
+            var response = await _documentsService.UpdateAsync(updateParameters);
+            if (!response.Success)
+                return StatusCode((int)response.StatusCode, response.Message);
 
-                DocumentsFindByIdParameters findByIdParameters = new DocumentsFindByIdParameters()
-                {
-                    Id = documentId,
-                    UserName = updateParameters.UserName
-                };
-                findByIdParametersList.Add(findByIdParameters);
-            }
-
-            try
-            {
-                var documents = await _documentsService.UpdateAsync(findByIdParametersList, updateParameters.NewState);
-                if (documents == null)
-                    return BadRequest();
-
-                var documentsDto = _mapper.Map<IEnumerable<Document>, IEnumerable<DocumentDto>>(documents);
-                return Ok(documentsDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok();
+         
         }
         private void AddPaginationInRequestHeader(string routeName,
                                                DocumentListQueryParameters queryParameters,
@@ -156,8 +97,8 @@ namespace SproomInbox.API
                                                                                     routeName,
                                                                                     queryParameters,
                                                                                     pagedList);
-
-            Response.Headers.Add("Pagination", JsonSerializer.Serialize(paginationMetadata));
+            if (Response != null && Response.Headers != null)
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
         }
     }
 }

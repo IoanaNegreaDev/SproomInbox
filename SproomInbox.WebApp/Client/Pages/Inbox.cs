@@ -18,6 +18,7 @@ namespace SproomInbox.WebApp.Client.Pages
         private List<string> _selectedIds { get; set; } = new List<string>();
         private Dictionary<string, bool> _documentExpanded = new Dictionary<string, bool>();
         private Dictionary<string, bool> _documentChecked = new Dictionary<string, bool>();
+        private bool _failedToUpdate = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -64,6 +65,8 @@ namespace SproomInbox.WebApp.Client.Pages
 
             var newState = Enum.GetName<StateDto>(StateDto.Approved);
             var response = await UpdateDocumentsAsync(newState);
+            if (!response.IsSuccessStatusCode)
+                _failedToUpdate = true;
 
             response = await DocumentService.FetchDocumentsAsync(FilterParameters);
             _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
@@ -85,6 +88,8 @@ namespace SproomInbox.WebApp.Client.Pages
             var newState = Enum.GetName<StateDto>(StateDto.Rejected);
 
             var response = await UpdateDocumentsAsync(newState);
+            if (!response.IsSuccessStatusCode)
+                _failedToUpdate = true;
 
             response = await DocumentService.FetchDocumentsAsync(FilterParameters);
             if (response.IsSuccessStatusCode)

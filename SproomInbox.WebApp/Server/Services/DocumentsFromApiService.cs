@@ -60,7 +60,7 @@ namespace SproomInbox.WebApp.Server.Services
             
             if (httpResponseMessage.IsSuccessStatusCode &&
                 stateValue == StateDto.Approved)
-                _emailService.SendApprovedDocumentsEmail(updateParameters);
+                await _emailService.SendApprovedDocumentsEmail(updateParameters);
 
             return httpResponseMessage;
         }
