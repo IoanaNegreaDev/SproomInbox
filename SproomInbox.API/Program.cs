@@ -15,12 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SproomDocumentsDbContext>(options =>
                        options.UseSqlServer(builder.Configuration.GetConnectionString("SproomDocumentsDbConnection")));
+builder.Services.AddTransient<DataSeeder>();
 
 var mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new ModelDtoMapper()));
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddScoped<IDocumentsRepository, DocumentsRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IDocumentStateRepository, DocumentStateRepository>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -36,27 +37,6 @@ builder.Services.AddControllers()
                     options.ImplicitlyValidateRootCollectionElements = true;
                     options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                 });
-/*
-builder.Services.AddHttpCacheHeaders(expirationModelOptionsAction =>
-             {
-              //Default:60
-          //Reflected in the time difference between expires and last-modified in Hearder
-          expirationModelOptionsAction.MaxAge = 50;
-        //Default:Public
-          expirationModelOptionsAction.CacheLocation = CacheLocation.Public;
-          }
-      , validationModelOptionsAction =>
-      {
-              validationModelOptionsAction.MustRevalidate = true; //Default:false
-
-          //Default:[Accept,Accept-Language,Accept-Encoding]
-          var vary = validationModelOptionsAction.Vary.ToList();
-              vary.AddRange(new string[] { "Id", "Age" });        //Pay attention to this detail
-              validationModelOptionsAction.Vary = vary;
-
-          validationModelOptionsAction.VaryByAll = false;     //Default:false
-          }
-      )*/
 
 //builder.Services.AddResponseCaching();
 
@@ -70,9 +50,10 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{
+{   
     app.UseSwagger();
     app.UseSwaggerUI();
+    SeedData(app);
 }
 
 app.UseAuthorization();
@@ -86,3 +67,14 @@ app.UseRouting();
 app.MapControllers();
 
 app.Run();
+
+void SeedData(IHost app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<DataSeeder>();
+        service.Seed();
+    }
+}

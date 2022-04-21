@@ -3,7 +3,7 @@
     public interface IUnitOfWork
     {
         IDocumentStateRepository DocumentStateRepository { get; }
-        IDocumentsRepository DocumentRepository { get; }
+        IDocumentRepository DocumentRepository { get; }
 
         IUserRepository UserRepository { get; }
         void SaveChanges();
@@ -33,14 +33,14 @@
             }
         }
 
-        private IDocumentsRepository _documentRepository;
-        public IDocumentsRepository DocumentRepository
+        private IDocumentRepository _documentRepository;
+        public IDocumentRepository DocumentRepository
         {
             get
             {
                 if(_documentRepository == null)
                 {
-                    _documentRepository = new DocumentsRepository(_context);
+                    _documentRepository = new DocumentRepository(_context);
                 }
 
                 return _documentRepository;

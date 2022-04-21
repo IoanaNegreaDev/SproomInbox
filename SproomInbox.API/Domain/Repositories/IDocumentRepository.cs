@@ -4,7 +4,7 @@ using SproomInbox.WebApp.Shared.Resources.Parametrization;
 
 namespace SproomInbox.API.Domain.Repositories
 {
-    public interface IDocumentsRepository
+    public interface IDocumentRepository
     {
         Task<PagedList<Document>> ListAsync();
         Task<PagedList<Document>> ListAsync(DocumentsQueryParameters queryParameters);

@@ -1,20 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Moq;
+﻿using Moq;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Domain.Services;
-using SproomInbox.API.Utils.ErrorHandling;
-using SproomInbox.API.Utils.Paging;
-using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
-using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Xunit;
 
 namespace SproomInbox.API.Test.Domanin.Services
@@ -32,7 +23,7 @@ namespace SproomInbox.API.Test.Domanin.Services
         {
             #region setup
             Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
-            Mock<IDocumentsRepository> documentRepositoryMock = new Mock<IDocumentsRepository>();
+            Mock<IDocumentRepository> documentRepositoryMock = new Mock<IDocumentRepository>();
             Mock<IDocumentStateRepository> documentStateRepositoryMock = new Mock<IDocumentStateRepository>();
 
             State newState = State.Approved;
@@ -89,7 +80,7 @@ namespace SproomInbox.API.Test.Domanin.Services
         {
             #region setup
             Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
-            Mock<IDocumentsRepository> documentRepositoryMock = new Mock<IDocumentsRepository>();
+            Mock<IDocumentRepository> documentRepositoryMock = new Mock<IDocumentRepository>();
             Mock<IDocumentStateRepository> documentStateRepositoryMock = new Mock<IDocumentStateRepository>();
 
             State newState = State.Approved;
@@ -143,7 +134,7 @@ namespace SproomInbox.API.Test.Domanin.Services
         {
             #region setup
             Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
-            Mock<IDocumentsRepository> documentRepositoryMock = new Mock<IDocumentsRepository>();
+            Mock<IDocumentRepository> documentRepositoryMock = new Mock<IDocumentRepository>();
             Mock<IDocumentStateRepository> documentStateRepositoryMock = new Mock<IDocumentStateRepository>();
 
             State newState = State.Rejected;
