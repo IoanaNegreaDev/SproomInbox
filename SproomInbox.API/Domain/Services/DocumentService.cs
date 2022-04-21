@@ -18,7 +18,7 @@ namespace SproomInbox.API.Domain.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Status<PagedList<Document>>> ListDocumentsAsync(DocumentListQueryParameters queryParameters)
+        public async Task<Status<PagedList<Document>>> ListDocumentsAsync(DocumentsQueryParameters queryParameters)
         {
             var response = await _unitOfWork.DocumentRepository.ListAsync(queryParameters);
             return new Status<PagedList<Document>>(response);
@@ -78,7 +78,7 @@ namespace SproomInbox.API.Domain.Services
             return new Status<Document>(dbDocument);
         }*/
 
-        public async Task<Status<IEnumerable<Document>>> UpdateAsync(DocumentListStatusUpdateParameters listUpdate)
+        public async Task<Status<IEnumerable<Document>>> UpdateAsync(DocumentsUpdateStatusParameters listUpdate)
         {
             if (!Enum.TryParse<State>(listUpdate.NewState, true, out var newStateId) ||
                 !Enum.IsDefined<State>(newStateId) ||

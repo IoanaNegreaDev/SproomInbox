@@ -7,7 +7,7 @@ namespace SproomInbox.WebApp.Server.Services
         public EmailService()
         { }
 
-        public async Task SendApprovedDocumentsEmail(DocumentListStatusUpdateParameters updatedDocuments)
+        public async Task SendApprovedDocumentsEmail(DocumentsUpdateStatusParameters updatedDocuments)
         {
             // take the email address from somewhere
         }

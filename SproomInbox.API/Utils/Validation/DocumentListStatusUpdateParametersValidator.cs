@@ -4,7 +4,7 @@ using SproomInbox.WebApp.Shared.Resources.Parametrization;
 
 namespace SproomInbox.API.Utils.Validation
 {
-    public class DocumentListStatusUpdateParametersValidator : AbstractValidator<DocumentListStatusUpdateParameters>
+    public class DocumentListStatusUpdateParametersValidator : AbstractValidator<DocumentsUpdateStatusParameters>
     {
         public DocumentListStatusUpdateParametersValidator()
         {
@@ -20,12 +20,12 @@ namespace SproomInbox.API.Utils.Validation
                                                  Enum.TryParse<State>(state, true, out var stateId) &&
                                                  Enum.IsDefined<State>(stateId) &&
                                                  stateId != State.Received))
-                                         .WithMessage($"Invalid State value. Must be not null or { Enum.GetName<State>(State.Received)}.");
+                                         .WithMessage($"Invalid State value. Must be not null or { Enum.GetName<State>(State.Received)}. " +
+                                                      $"Allowed update states: { Enum.GetName<State>(State.Approved)},{ Enum.GetName<State>(State.Approved)}.");
 
             RuleFor(param => param.DocumentIds).NotNull();
             RuleForEach(param => param.DocumentIds).NotNull()
                                                    .Must(documentId => Guid.TryParse(documentId, out _));                             
         }
     }
-
 }

@@ -28,7 +28,7 @@ namespace SproomInbox.API.Domain.Repositories
             return await PagedList<Document>.Create(collection, defaultPagingMetadata);
         }
 
-        public async Task<PagedList<Document>> ListAsync(DocumentListQueryParameters queryParameters)
+        public async Task<PagedList<Document>> ListAsync(DocumentsQueryParameters queryParameters)
         {
             if (queryParameters == null)
                 return await ListAsync();
@@ -41,7 +41,7 @@ namespace SproomInbox.API.Domain.Repositories
             return await PagedList<Document>.Create(collection, queryParameters.Page);
         }
 
-        private IQueryable<Document> ApplyFilter(DocumentListQueryParameters queryParameters, 
+        private IQueryable<Document> ApplyFilter(DocumentsQueryParameters queryParameters, 
                                                  IQueryable<Document> collection)
         {
             bool ingnoreCase = true;

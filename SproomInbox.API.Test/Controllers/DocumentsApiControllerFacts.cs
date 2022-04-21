@@ -88,7 +88,7 @@ namespace SproomInbox.API.Test
             var mocServiceReturnStatusOk = new Status<PagedList<Document>>(mockPagedList);
             var mockDtoReturnStatusOk = new Status<PagedList<DocumentDto>>(mockPagedListDto);
 
-            var dummyQueryParameters = new DocumentListQueryParameters();
+            var dummyQueryParameters = new DocumentsQueryParameters();
             var dummyPagedListMetadata = new PagedListMetadata();
 
             documentServiceMock.Setup(method => method.ListDocumentsAsync(dummyQueryParameters))
@@ -144,7 +144,7 @@ namespace SproomInbox.API.Test
             var mocServiceReturnStatusOk = new Status<PagedList<Document>>(mockPagedList);
             var mockDtoReturnStatusOk = new Status<PagedList<DocumentDto>>(mockPagedListDto);
 
-            var dummyQueryParameters = new DocumentListQueryParameters();
+            var dummyQueryParameters = new DocumentsQueryParameters();
             var dummyPagedListMetadata = new PagedListMetadata();
 
             documentServiceMock.Setup(method => method.ListDocumentsAsync(dummyQueryParameters))
@@ -205,7 +205,7 @@ namespace SproomInbox.API.Test
             var mocServiceReturnStatusOk = new Status<PagedList<Document>>(mockPagedList);
             var mockDtoReturnStatusOk = new Status<PagedList<DocumentDto>>(mockPagedListDto);
 
-            var dummyQueryParameters = new DocumentListQueryParameters();
+            var dummyQueryParameters = new DocumentsQueryParameters();
             var dummyPagedListMetadata = new PagedListMetadata();
 
             documentServiceMock.Setup(method => method.ListDocumentsAsync(dummyQueryParameters))
@@ -254,7 +254,7 @@ namespace SproomInbox.API.Test
             var mocServiceReturnStatusOk = new Status<PagedList<Document>>(mockPagedList);
             var mockDtoReturnStatusOk = new Status<PagedList<DocumentDto>>(mockPagedListDto);
 
-            var dummyQueryParameters = new DocumentListQueryParameters();
+            var dummyQueryParameters = new DocumentsQueryParameters();
             var dummyPagedListMetadata = new PagedListMetadata();
 
             documentServiceMock.Setup(method => method.ListDocumentsAsync(dummyQueryParameters))

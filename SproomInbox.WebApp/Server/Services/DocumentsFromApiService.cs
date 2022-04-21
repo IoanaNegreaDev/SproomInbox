@@ -22,10 +22,10 @@ namespace SproomInbox.WebApp.Server.Services
             _baseAddress = _httpClient.BaseAddress + "documents";
         }
 
-        public async Task<HttpResponseMessage> FetchDocumentsAsync(DocumentListQueryParameters queryParameters)
+        public async Task<HttpResponseMessage> FetchDocumentsAsync(DocumentsQueryParameters queryParameters)
         {
             if (queryParameters == null)
-                throw new ArgumentNullException(nameof(DocumentListQueryParameters));
+                throw new ArgumentNullException(nameof(DocumentsQueryParameters));
 
             NameValueCollection queryPairs = System.Web.HttpUtility.ParseQueryString(string.Empty);
             queryPairs.Add("username", queryParameters.UserName);
@@ -43,7 +43,7 @@ namespace SproomInbox.WebApp.Server.Services
             return httpResponseMessage;
         }
 
-        public async Task<HttpResponseMessage> UpdateDocumentsAsync(DocumentListStatusUpdateParameters updateParameters)
+        public async Task<HttpResponseMessage> UpdateDocumentsAsync(DocumentsUpdateStatusParameters updateParameters)
         {
             var enumValueParsingSucceded = Enum.TryParse<StateDto>(updateParameters.NewState, out var stateValue);
             if (!enumValueParsingSucceded ||

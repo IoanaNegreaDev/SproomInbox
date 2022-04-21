@@ -43,7 +43,7 @@ namespace SproomInbox.API
         [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
         [HttpCacheValidation(MustRevalidate = true, NoCache =false, Vary = new[] { "Accept", "Accept-Language", "Accept-Encoding", "UserName", "Type", "State" })]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsAsync(
-                                                                    [FromQuery] DocumentListQueryParameters queryParameters)
+                                                                    [FromQuery] DocumentsQueryParameters queryParameters)
         {
             // user whould be authenticated
             // var authenticatedUserId = HttpContext.User.Identity.Name;
@@ -80,7 +80,7 @@ namespace SproomInbox.API
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update( DocumentListStatusUpdateParameters updateParameters)
+        public async Task<ActionResult> Update(DocumentsUpdateStatusParameters updateParameters)
         { 
             var response = await _documentsService.UpdateAsync(updateParameters);
             if (!response.Success)
@@ -90,7 +90,7 @@ namespace SproomInbox.API
          
         }
         private void AddPaginationInRequestHeader(string routeName,
-                                               DocumentListQueryParameters queryParameters,
+                                               DocumentsQueryParameters queryParameters,
                                                PagedList<DocumentDto> pagedList)
         {
             var paginationMetadata = _paginationUriBuilder.BuildPaginationMetadata(Url,

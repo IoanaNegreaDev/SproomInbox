@@ -23,7 +23,7 @@ namespace SproomInbox.WebApp.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(string userName, string? type, string? state)
         {
-            var queryParameters = new DocumentListQueryParameters()
+            var queryParameters = new DocumentsQueryParameters()
             {
                 UserName = userName,
                 Type = type,
@@ -41,7 +41,7 @@ namespace SproomInbox.WebApp.Server.Controllers
        }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateDocuments(DocumentListStatusUpdateParameters updateParameters)
+        public async Task<ActionResult> UpdateDocuments(DocumentsUpdateStatusParameters updateParameters)
         {
             var response = await _documentService.UpdateDocumentsAsync(updateParameters);
 

@@ -4,6 +4,6 @@ namespace SproomInbox.WebApp.Server.Services
 {
     public interface IEmailService
     {
-        Task SendApprovedDocumentsEmail(DocumentListStatusUpdateParameters updatedDocuments);
+        Task SendApprovedDocumentsEmail(DocumentsUpdateStatusParameters updatedDocuments);
     }
 }

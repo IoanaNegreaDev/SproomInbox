@@ -12,7 +12,7 @@ namespace SproomInbox.WebApp.Client.Pages
         public IUsersFromWebServerService UserService { get; set; }
 
         private IList<UserDto>? _users;
-        private DocumentListQueryParameters FilterParameters { get; set; } = new DocumentListQueryParameters();
+        private DocumentsQueryParameters FilterParameters { get; set; } = new DocumentsQueryParameters();
         protected override async Task OnInitializedAsync()
         {
 

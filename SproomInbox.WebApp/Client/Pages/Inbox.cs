@@ -12,7 +12,7 @@ namespace SproomInbox.WebApp.Client.Pages
         public IDocumentsFromWebServerService DocumentService { get; set; }
 
         [Parameter]
-        public DocumentListQueryParameters FilterParameters { get; set; } = new DocumentListQueryParameters();
+        public DocumentsQueryParameters FilterParameters { get; set; } = new DocumentsQueryParameters();
   
         private IList<DocumentDto> _documents = new List<DocumentDto>();
         private List<string> _selectedIds { get; set; } = new List<string>();
@@ -103,7 +103,7 @@ namespace SproomInbox.WebApp.Client.Pages
         }
         private async Task<HttpResponseMessage> UpdateDocumentsAsync(string newState)
         {
-            var updateParameters = new DocumentListStatusUpdateParameters()
+            var updateParameters = new DocumentsUpdateStatusParameters()
             {
                 DocumentIds = _selectedIds,
                 UserName = FilterParameters.UserName,

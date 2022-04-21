@@ -6,7 +6,7 @@ namespace SproomInbox.API.Utils.Paging
     {
         public object BuildPaginationMetadata<T>(IUrlHelper urlHelper, 
                                                 string routeName, 
-                                                DocumentListQueryParameters queryParameters,
+                                                DocumentsQueryParameters queryParameters,
                                                 PagedList<T> pagedList)
         {
 
@@ -39,7 +39,7 @@ namespace SproomInbox.API.Utils.Paging
 
         private string CreateDocumentsResourceUri(IUrlHelper urlHelper, 
                                                   string routeName,
-                                                  DocumentListQueryParameters queryParameters,
+                                                  DocumentsQueryParameters queryParameters,
                                                   PageNavigationType pageNavigationType)
         { 
             switch (pageNavigationType)

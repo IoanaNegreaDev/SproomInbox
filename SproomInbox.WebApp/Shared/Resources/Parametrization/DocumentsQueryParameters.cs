@@ -2,7 +2,7 @@
 
 namespace SproomInbox.WebApp.Shared.Resources.Parametrization
 {
-    public class DocumentListQueryParameters
+    public class DocumentsQueryParameters
     {
         public string UserName { get; set; } = String.Empty;
         public string Id { get; set; } = String.Empty;

@@ -15,10 +15,10 @@ namespace SproomInbox.WebApp.Client.Services
                 throw new ArgumentNullException(nameof(httpClient));
             _httpClient = httpClient;
         }
-        public async Task<HttpResponseMessage> FetchDocumentsAsync(DocumentListQueryParameters queryParameters)
+        public async Task<HttpResponseMessage> FetchDocumentsAsync(DocumentsQueryParameters queryParameters)
         {
             if (queryParameters == null)
-                throw new ArgumentNullException(nameof(DocumentListQueryParameters));
+                throw new ArgumentNullException(nameof(DocumentsQueryParameters));
 
             NameValueCollection queryPairs = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
@@ -36,7 +36,7 @@ namespace SproomInbox.WebApp.Client.Services
             return httpResponseMessage;
         }
 
-        public async Task<HttpResponseMessage> UpdateDocumentsAsync(DocumentListStatusUpdateParameters updateParameters)
+        public async Task<HttpResponseMessage> UpdateDocumentsAsync(DocumentsUpdateStatusParameters updateParameters)
         {
             var updateParametersJson = new StringContent(
                         JsonSerializer.Serialize(updateParameters),

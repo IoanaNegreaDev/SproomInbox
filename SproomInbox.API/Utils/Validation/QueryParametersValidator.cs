@@ -4,7 +4,7 @@ using SproomInbox.WebApp.Shared.Resources.Parametrization;
 
 namespace RentalAPI.ValidationFilters
 {
-    public class QueryParametersValidator: AbstractValidator<DocumentListQueryParameters>
+    public class QueryParametersValidator: AbstractValidator<DocumentsQueryParameters>
     {
         public QueryParametersValidator()
         {
