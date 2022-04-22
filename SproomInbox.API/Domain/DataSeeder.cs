@@ -13,6 +13,8 @@ namespace SproomInbox.API.Domain
 
         public void Seed()
         {
+            _dbContext.Database.EnsureCreated();
+
             if (!_dbContext.Users.Any())
             {
                 var users = new List<User>() 

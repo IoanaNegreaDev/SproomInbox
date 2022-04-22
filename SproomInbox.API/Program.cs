@@ -16,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SproomDocumentsDbContext>(options =>
                        options.UseSqlServer(builder.Configuration.GetConnectionString("SproomDocumentsDbConnection")));
 builder.Services.AddTransient<DataSeeder>();
+
+
 builder.Services.AddMvc(setupAction =>
 {
     setupAction.ReturnHttpNotAcceptable = true;
@@ -93,11 +95,18 @@ void SeedData(IHost app)
         return;
    
     using (var scope = scopedFactory.CreateScope())
-    { 
-        var service = scope.ServiceProvider.GetService<DataSeeder>();
-        if (service == null)
-            return;
-
-        service.Seed();
+    {
+        try { 
+            var service = scope.ServiceProvider.GetService<DataSeeder>();
+            if (service == null)
+                return;
+       
+            service.Seed();
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database.");
+        }
     }
 }
