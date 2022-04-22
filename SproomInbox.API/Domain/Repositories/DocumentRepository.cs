@@ -85,10 +85,16 @@ namespace SproomInbox.API.Domain.Repositories
             }
             return collection;
         }
-        public async Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters)
-          => await _table.Where(document => document.Id == findParameters.Id &&
-                                            document.User.UserName == findParameters.UserName)
-                        .FirstOrDefaultAsync();
+        public async Task<Document?> FindByIdAsync(DocumentsFindByIdParameters findParameters)
+        {
+            if (findParameters == null)
+                return null;
+
+            return await _table.Where(document => document.Id == findParameters.Id &&
+                                      document.User.UserName == findParameters.UserName)
+                               .FirstOrDefaultAsync();
+        }
+
         public void Update(Document document)
           => _table.Update(document);   
       }

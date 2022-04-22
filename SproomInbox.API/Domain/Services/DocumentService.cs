@@ -20,6 +20,9 @@ namespace SproomInbox.API.Domain.Services
 
         public async Task<Status<PagedList<Document>>> ListDocumentsAsync(DocumentsQueryParameters queryParameters)
         {
+            if (_unitOfWork.DocumentRepository == null)
+                throw new Exception("Null Document Repository.");
+
             var response = await _unitOfWork.DocumentRepository.ListAsync(queryParameters);
             if (response == null)
                 throw new Exception("Failed to get documents. Internal error.");
@@ -28,7 +31,10 @@ namespace SproomInbox.API.Domain.Services
         }
         public async Task<Status<Document>> FindByIdAsync(DocumentsFindByIdParameters findParameters)
         {
-            var  response = await _unitOfWork.DocumentRepository.FindByIdAsync(findParameters);    
+            if (_unitOfWork.DocumentRepository == null)
+                throw new Exception("Null Document Repository.");
+
+            var response = await _unitOfWork.DocumentRepository.FindByIdAsync(findParameters);    
             if (response == null)
                 return new Status<Document>(HttpStatusCode.NotFound, $"Document with id = {findParameters.Id} not found.");
 
@@ -37,28 +43,36 @@ namespace SproomInbox.API.Domain.Services
   
         public async Task<Status<IEnumerable<Document>>> UpdateAsync(DocumentsUpdateStatusParameters updateParameters)
         {
-            // updateParameters.NewState already validated by fluent validator
-            var newStateId = Enum.Parse<State>(updateParameters.NewState);
+            if (_unitOfWork.DocumentRepository == null)
+                throw new Exception("Null Document Repository.");
+
+            if (_unitOfWork.DocumentStateRepository == null)
+                throw new Exception("Null DocumentState Repository.");
+
+            if (!Enum.TryParse<State>(updateParameters.NewState, out var newStateId) ||
+                newStateId == State.Received)
+                return new Status<IEnumerable<Document>>(HttpStatusCode.UnprocessableEntity, $"Cannot update to state {updateParameters.NewState}.");
+
             var updatedDocuments = new List<Document>();
 
             foreach (var documentId in updateParameters.DocumentIds)
             {
                 // documentId already validated by fluent validator
-                var IdValue = Guid.Parse(documentId);   
+              //  var IdValue = Guid.Parse(documentId);   
                 DocumentsFindByIdParameters findDocumentByIdParameters = new DocumentsFindByIdParameters()
                 {
-                    Id = IdValue,
+                    Id = documentId,
                     UserName = updateParameters.UserName
                 };
 
                 var dbDocument = await _unitOfWork.DocumentRepository.FindByIdAsync(findDocumentByIdParameters);
                 if (dbDocument == null)
                     return new Status<IEnumerable<Document>>(HttpStatusCode.BadRequest, 
-                                            $"Document {IdValue} not found.");
+                                            $"Document {findDocumentByIdParameters.Id.ToString()} not found.");
 
                 if (dbDocument.StateId != State.Received)
-                    return new Status<IEnumerable<Document>>(HttpStatusCode.BadRequest,
-                                                            $"Document {documentId}'s state cannot be modified.");
+                    return new Status<IEnumerable<Document>>(HttpStatusCode.UnprocessableEntity,
+                                                            $"Document {documentId}'s state is already {Enum.GetName(dbDocument.StateId)}. It cannot be modified.");
                 var newDocumentState = new DocumentState()
                 {
                     DocumentId = dbDocument.Id,

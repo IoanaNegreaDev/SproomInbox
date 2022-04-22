@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using Marvin.Cache.Headers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using SproomInbox.API.Domain;
 using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Domain.Services;
@@ -43,9 +44,20 @@ builder.Services.AddControllers()
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1.0",
+        Title = "Sproom Documents API",
+        Description = "Visma Interview Assignment"
+    });
+
+    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+    options.IncludeXmlComments(xmlCommentsFullPath);
 });
+
 
 var app = builder.Build();
 
@@ -53,7 +65,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {   
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(setupAction =>
+    {
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/SproomDocumentsAPISpecification/swagger.json", "v1");
+            options.RoutePrefix = string.Empty;
+        });
+    }); 
     SeedData(app);
 }
 
@@ -73,10 +92,15 @@ app.Run();
 void SeedData(IHost app)
 {
     var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
-
+    if (scopedFactory == null)
+        return;
+   
     using (var scope = scopedFactory.CreateScope())
-    {
+    { 
         var service = scope.ServiceProvider.GetService<DataSeeder>();
+        if (service == null)
+            return;
+
         service.Seed();
     }
 }

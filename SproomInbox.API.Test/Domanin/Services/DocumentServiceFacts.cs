@@ -13,12 +13,6 @@ namespace SproomInbox.API.Test.Domanin.Services
     public class DocumentServiceFacts
     {
         [Fact]
-        public void Constructor_OnNullParameters_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => new DocumentService(null));
-        }
-
-        [Fact]
         public async  void UpdateAsync_ValidParameters_Returns_List_StatusOk()
         {
             #region setup
@@ -39,7 +33,7 @@ namespace SproomInbox.API.Test.Domanin.Services
             DocumentsUpdateStatusParameters updateParameters = new DocumentsUpdateStatusParameters()
             {
                 NewState = Enum.GetName(typeof(State), newState),
-                DocumentIds = new List<string> { id1.ToString(), id2.ToString() }
+                DocumentIds = new List<Guid> { id1, id2 }
             };
 
             DocumentState mockDocumentState = new DocumentState();
@@ -96,7 +90,7 @@ namespace SproomInbox.API.Test.Domanin.Services
             DocumentsUpdateStatusParameters updateParameters = new DocumentsUpdateStatusParameters()
             {
                 NewState = Enum.GetName(typeof(State), newState),
-                DocumentIds = new List<string> { id1.ToString(), id2.ToString() }
+                DocumentIds = new List<Guid> { id1, id2 }
             };
 
             DocumentState mockDocumentState = new DocumentState();
@@ -150,7 +144,7 @@ namespace SproomInbox.API.Test.Domanin.Services
             DocumentsUpdateStatusParameters updateParameters = new DocumentsUpdateStatusParameters()
             {
                 NewState = Enum.GetName(typeof(State), newState),
-                DocumentIds = new List<string> { id1.ToString(), id2.ToString() }
+                DocumentIds = new List<Guid> { id1, id2 }
             };
 
             DocumentState mockDocumentState = new DocumentState();

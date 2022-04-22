@@ -42,7 +42,10 @@ namespace SproomInbox.API.Controllers
             if (!response.Success)
                 return StatusCode((int)response.StatusCode, response.Message);
 
-            var users = response._entity;
+            IEnumerable<User>? users = response._entity;
+            if (users == null)
+                return NoContent();
+
             var usersDtoList = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
             return Ok(usersDtoList);
            

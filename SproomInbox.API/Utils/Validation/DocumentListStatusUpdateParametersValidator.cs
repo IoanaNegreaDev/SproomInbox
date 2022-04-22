@@ -16,16 +16,13 @@ namespace SproomInbox.API.Utils.Validation
             RuleFor(param => param.NewState).NotNull()
                                                 .Must(state =>
                                                 string.IsNullOrEmpty(state) ||
-                                                (int.TryParse(state, out _) == false &&
-                                                 Enum.TryParse<State>(state, true, out var stateId) &&
-                                                 Enum.IsDefined<State>(stateId) &&
-                                                 stateId != State.Received))
+                                                (StateValidityChecker.IsValid(state) &&
+                                                 Enum.Parse<State>(state) != State.Received))
                                          .WithMessage($"Invalid State value. Must be not null or { Enum.GetName<State>(State.Received)}. " +
                                                       $"Allowed update states: { Enum.GetName<State>(State.Approved)},{ Enum.GetName<State>(State.Approved)}.");
 
             RuleFor(param => param.DocumentIds).NotNull();
-            RuleForEach(param => param.DocumentIds).NotNull()
-                                                   .Must(documentId => Guid.TryParse(documentId, out _));                             
+            RuleForEach(param => param.DocumentIds).NotNull();                     
         }
     }
 }

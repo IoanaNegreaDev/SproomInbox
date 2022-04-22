@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SproomInbox.API.Utils.Paging
+﻿namespace SproomInbox.API.Utils.Paging
 {
     public interface IPagedList<out T> : IPagedList, IEnumerable<T>
     {

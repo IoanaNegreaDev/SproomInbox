@@ -14,14 +14,14 @@ namespace SproomInbox.API.Utils.Paging
                 CreateDocumentsResourceUri(urlHelper,
                                         routeName,
                                         queryParameters,
-                                        PageNavigationType.PreviousPage)
+                                        PageNavigation.PreviousPage)
                  : null;
 
             var nextPageLink = pagedList.HasNext ?
                 CreateDocumentsResourceUri(urlHelper,
                                          routeName,
                                         queryParameters,
-                                        PageNavigationType.NextPage)
+                                        PageNavigation.NextPage)
                  : null;
 
             var paginationMetadata = new
@@ -37,14 +37,15 @@ namespace SproomInbox.API.Utils.Paging
             return paginationMetadata;
         }
 
-        private string CreateDocumentsResourceUri(IUrlHelper urlHelper, 
+        private string? CreateDocumentsResourceUri(IUrlHelper urlHelper, 
                                                   string routeName,
                                                   DocumentsQueryParameters queryParameters,
-                                                  PageNavigationType pageNavigationType)
+                                                  PageNavigation pageNavigationType)
         { 
+
             switch (pageNavigationType)
             {
-                case PageNavigationType.PreviousPage:
+                case PageNavigation.PreviousPage:
                     return urlHelper.Link(routeName,
                         new
                         {
@@ -53,7 +54,7 @@ namespace SproomInbox.API.Utils.Paging
                             searchQuery = queryParameters.Search,
                             fields = queryParameters.Fields
                         });
-                case PageNavigationType.NextPage:
+                case PageNavigation.NextPage:
                     return urlHelper.Link(routeName,
                         new
                         {                           
@@ -62,7 +63,7 @@ namespace SproomInbox.API.Utils.Paging
                             searchQuery = queryParameters.Search,
                             fields = queryParameters.Fields
                         });
-                case PageNavigationType.Current:
+                case PageNavigation.Current:
                 default:
                     return urlHelper.Link(routeName,
                         new

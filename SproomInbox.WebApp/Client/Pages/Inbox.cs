@@ -15,9 +15,9 @@ namespace SproomInbox.WebApp.Client.Pages
         public DocumentsQueryParameters FilterParameters { get; set; } = new DocumentsQueryParameters();
   
         private IList<DocumentDto> _documents = new List<DocumentDto>();
-        private List<string> _selectedIds { get; set; } = new List<string>();
-        private Dictionary<string, bool> _documentExpanded = new Dictionary<string, bool>();
-        private Dictionary<string, bool> _documentChecked = new Dictionary<string, bool>();
+        private List<Guid> _selectedIds { get; set; } = new List<Guid>();
+        private Dictionary<Guid, bool> _documentExpanded = new Dictionary<Guid, bool>();
+        private Dictionary<Guid, bool> _documentChecked = new Dictionary<Guid, bool>();
         private bool _failedToUpdate = false;
 
         protected override async Task OnInitializedAsync()
@@ -39,7 +39,7 @@ namespace SproomInbox.WebApp.Client.Pages
 
             await base.OnInitializedAsync();
         }
-        private void OnCheckboxClicked(string documentId, object isChecked)
+        private void OnCheckboxClicked(Guid documentId, object isChecked)
         {
             _documentChecked[documentId] = (bool)isChecked;
             if ((bool)isChecked)

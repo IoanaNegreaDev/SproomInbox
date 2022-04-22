@@ -2,10 +2,9 @@
 {
     public interface IUnitOfWork
     {
-        IDocumentStateRepository DocumentStateRepository { get; }
-        IDocumentRepository DocumentRepository { get; }
-
-        IUserRepository UserRepository { get; }
+        IDocumentStateRepository? DocumentStateRepository { get;  }
+        IDocumentRepository? DocumentRepository { get; }
+        IUserRepository? UserRepository { get; }
         void SaveChanges();
     }
 
@@ -15,10 +14,12 @@
 
         public UnitOfWork(SproomDocumentsDbContext context)
         {
+            if (context == null)    
+                throw new ArgumentNullException("context");
             _context = context;
         }
 
-        private IDocumentStateRepository _documentStateRepository;
+        private IDocumentStateRepository? _documentStateRepository;
       
         public IDocumentStateRepository DocumentStateRepository
         {
@@ -33,7 +34,7 @@
             }
         }
 
-        private IDocumentRepository _documentRepository;
+        private IDocumentRepository? _documentRepository;
         public IDocumentRepository DocumentRepository
         {
             get
@@ -47,7 +48,7 @@
             }
         }
 
-        private IUserRepository _userRepository;
+        private IUserRepository? _userRepository;
         public IUserRepository UserRepository
         {
             get

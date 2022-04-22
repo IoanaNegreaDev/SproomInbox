@@ -8,7 +8,7 @@ namespace SproomInbox.API.Domain.Repositories
     {
         Task<PagedList<Document>> ListAsync();
         Task<PagedList<Document>> ListAsync(DocumentsQueryParameters queryParameters);
-        Task<Document> FindByIdAsync(DocumentsFindByIdParameters findParameters);
+        Task<Document?> FindByIdAsync(DocumentsFindByIdParameters findParameters);
         void Update(Document document);
     }
 }

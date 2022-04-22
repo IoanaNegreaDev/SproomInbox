@@ -1,6 +1,6 @@
 ﻿namespace SproomInbox.API.Utils.Paging
 {
-    public enum PageNavigationType
+    public enum PageNavigation
     {
         PreviousPage,
         NextPage,

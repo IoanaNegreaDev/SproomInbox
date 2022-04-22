@@ -74,8 +74,8 @@ namespace SproomInbox.API.Test
 
             List<DocumentDto> mockListDto = new List<DocumentDto>()
             { 
-                new DocumentDto { Id= id1.ToString() },
-                new DocumentDto { Id= id1.ToString() },
+                new DocumentDto { Id= id1 },
+                new DocumentDto { Id= id1 },
             };
 
             PagedList<Document> mockPagedList = new PagedList<Document>(mockList, new PagedListMetadata());
@@ -113,7 +113,7 @@ namespace SproomInbox.API.Test
             var returnedValue = Assert.IsAssignableFrom<PagedList<DocumentDto>>(okResultValue);
             Assert.Equal(2, returnedValue.Count());
             Assert.True(returnedValue[0] == mockListDto[0] && returnedValue[1] == mockListDto[1]);
-            Assert.NotNull(documentController.Response.Headers["X-Pagination"]);
+            Assert.True(documentController.Response.Headers["X-Pagination"].Any());
             #endregion
         }
 
@@ -192,8 +192,8 @@ namespace SproomInbox.API.Test
 
             List<DocumentDto> mockListDto = new List<DocumentDto>()
             {
-                new DocumentDto { Id= id1.ToString() },
-                new DocumentDto { Id= id1.ToString() },
+                new DocumentDto { Id= id1 },
+                new DocumentDto { Id= id1 },
             };
 
             PagedList<Document> mockPagedList = new PagedList<Document>(mockList, new PagedListMetadata());
@@ -224,7 +224,7 @@ namespace SproomInbox.API.Test
             #endregion
 
             #region assert
-            Assert.NotNull(documentController.Response.Headers["X-Pagination"]);
+            Assert.True(documentController.Response.Headers["X-Pagination"].Any());
             #endregion
         }
 

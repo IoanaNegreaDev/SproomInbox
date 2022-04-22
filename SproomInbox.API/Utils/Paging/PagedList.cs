@@ -1,5 +1,4 @@
-﻿
-using SproomInbox.API.Utils.Extensions;
+﻿using SproomInbox.API.Utils.Extensions;
 using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 
 namespace SproomInbox.API.Utils.Paging
@@ -23,7 +22,7 @@ namespace SproomInbox.API.Utils.Paging
         public async static Task<PagedList<T>> Create(IQueryable<T> source, PagedListMetadata pagedMetadata)
         {
             if (source == null || pagedMetadata == null)
-                return null; 
+                return new PagedList<T>(new List<T>(), new PagedListMetadata());
 
             var items = await source.Skip((pagedMetadata.Current - 1) * pagedMetadata.Size).Take(pagedMetadata.Size)
                                     .ToListAsyncSafe();

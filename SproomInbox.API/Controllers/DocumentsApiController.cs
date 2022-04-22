@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.Paging;
+using SproomInbox.API.Utils.Validation;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Text.Json;
@@ -28,7 +29,7 @@ namespace SproomInbox.API
                 throw new ArgumentNullException(nameof(documentsService));
             if (paginationUriBuilder == null)
                 throw new ArgumentNullException(nameof(paginationUriBuilder));
-            if (mapper == null) 
+            if (mapper == null)
                 throw new ArgumentNullException(nameof(mapper));
             if (logger == null)
                 throw new ArgumentNullException(nameof(logger));
@@ -41,32 +42,35 @@ namespace SproomInbox.API
 
         [HttpGet(Name = "GetDocuments")]
         [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
-        [HttpCacheValidation(MustRevalidate = true, NoCache =false, Vary = new[] { "Accept", "Accept-Language", "Accept-Encoding", "UserName", "Type", "State" })]
+        [HttpCacheValidation(MustRevalidate = true, NoCache = false, Vary = new[] { "Accept", "Accept-Language", "Accept-Encoding", "UserName", "Type", "State" })]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsAsync(
-                                                                    [FromQuery]DocumentsQueryParameters queryParameters)
+                                                                    [FromQuery] DocumentsQueryParameters queryParameters)
         {
             // user whould be authenticated
-            // var authenticatedUserId = HttpContext.User.Identity.Name;
+            // authenticatedUserId = HttpContext.User.Identity.Name;
             var response = await _documentsService.ListDocumentsAsync(queryParameters);
             if (!response.Success)
                 return StatusCode((int)response.StatusCode, response.Message);
 
             var documents = response._entity;
-            var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(documents);
+            if (documents == null)
+                return NoContent();
 
-             if (documentsDtoPagedList.Count == 0)
+            var documentsDtoPagedList = _mapper.Map<PagedList<Document>, PagedList<DocumentDto>>(documents);
+            if (documentsDtoPagedList.Count == 0)
                 return NoContent();
 
             AddPaginationInRequestHeader("GetDocuments",
                                          queryParameters,
                                          documentsDtoPagedList);
-            return Ok(documentsDtoPagedList);          
+            return Ok(documentsDtoPagedList);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById([FromQuery]  DocumentsFindByIdParameters findByIdParameters)
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById(Guid id, string userName)
         {
-            var response = await _documentsService.FindByIdAsync(findByIdParameters);        
+            var findByIdParameters = new DocumentsFindByIdParameters() { Id = id, UserName = userName };
+            var response = await _documentsService.FindByIdAsync(findByIdParameters);
             if (!response.Success)
                 return StatusCode((int)response.StatusCode, response.Message);
 
@@ -78,16 +82,39 @@ namespace SproomInbox.API
             return Ok(documentDto);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Update(DocumentsUpdateStatusParameters updateParameters)
-        { 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateAsync(Guid id, string userName, string newState)
+        {
+            if (!StateValidityChecker.IsValid(newState))
+                return BadRequest($"Invalid State value. Must be not null or { Enum.GetName<State>(State.Received)}. " +
+                                  $"Available tates: {String.Join(", ", Enum.GetNames<State>())} .");
+
+            var updateParameters = new DocumentsUpdateStatusParameters()
+            {
+                DocumentIds = new List<Guid>() { id },
+                UserName = userName,
+                NewState = newState
+            };
+
             var response = await _documentsService.UpdateAsync(updateParameters);
             if (!response.Success)
                 return StatusCode((int)response.StatusCode, response.Message);
 
             return Ok();
-         
+
         }
+
+        [HttpPut]
+        public async Task<ActionResult> Update(DocumentsUpdateStatusParameters updateParameters)
+        {
+            var response = await _documentsService.UpdateAsync(updateParameters);
+            if (!response.Success)
+                return StatusCode((int)response.StatusCode, response.Message);
+
+            return Ok();
+
+        }
+    
         private void AddPaginationInRequestHeader(string routeName,
                                                DocumentsQueryParameters queryParameters,
                                                PagedList<DocumentDto> pagedList)

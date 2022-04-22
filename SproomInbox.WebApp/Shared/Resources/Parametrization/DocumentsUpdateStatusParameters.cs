@@ -2,8 +2,8 @@
 {
     public class DocumentsUpdateStatusParameters
     {
-        public List<string> DocumentIds { get; set; }
-        public string UserName {get; set;}
-        public string NewState {get; set;}
+        public List<Guid> DocumentIds { get; set; } = new List<Guid>();
+        public string UserName {get; set; } = String.Empty;
+        public string NewState {get; set; } = String.Empty;
     }
 }

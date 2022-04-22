@@ -2,6 +2,7 @@
 using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Utils.ErrorHandling;
 using SproomInbox.API.Utils.Paging;
+using System.Net;
 
 namespace SproomInbox.API.Domain.Services
 {
@@ -17,6 +18,9 @@ namespace SproomInbox.API.Domain.Services
         }
         public async Task<Status<IEnumerable<User>>> ListUsersAsync()
         {
+            if (_unitOfWork.UserRepository == null)
+                throw new Exception("Null User Repository.");
+
             var response = await _unitOfWork.UserRepository.ListAsync();
 
             if (response == null)

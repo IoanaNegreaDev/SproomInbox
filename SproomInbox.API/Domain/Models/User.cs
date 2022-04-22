@@ -5,19 +5,14 @@ namespace SproomInbox.API.Domain.Models
 {
     public class User
     {
-        public User()
-        {
-            Documents = new HashSet<Document>();
-        }
-
         [Key]
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string UserName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
         public string? PasswordHash { get; set; }
 
         [InverseProperty("User")]
-        public virtual ICollection<Document> Documents { get; set; }
+        public virtual ICollection<Document> Documents { get; set; } = new HashSet<Document>();
     }
 }

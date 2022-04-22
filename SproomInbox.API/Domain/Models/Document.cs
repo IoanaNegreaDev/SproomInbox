@@ -7,11 +7,6 @@ namespace SproomInbox.API.Domain.Models
     [Table("Document")]
     public class Document
     {
-        public Document()
-        {
-            StateHistory = new HashSet<DocumentState>();
-        }
-
         [Key]
         public Guid Id { get; set; }
         public DocumentType TypeId { get; set; }
@@ -21,10 +16,10 @@ namespace SproomInbox.API.Domain.Models
         public int UserId { get; set; }
 
         [InverseProperty("Document")]
-        public virtual ICollection<DocumentState> StateHistory { get; set; }
+        public virtual ICollection<DocumentState> StateHistory { get; set; } = new HashSet<DocumentState>();
 
         [ForeignKey("UserId")]
         [InverseProperty("Documents")]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = new User();
     }
 }

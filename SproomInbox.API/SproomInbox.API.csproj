@@ -7,6 +7,10 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
+    <PropertyGroup>
+	    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
@@ -37,5 +41,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SproomInbox.WebApp\Shared\SproomInbox.WebApp.Shared.csproj" />
   </ItemGroup>
-
 </Project>
