@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SproomInbox.API.Test", "SproomInbox.API.Test\SproomInbox.API.Test.csproj", "{EE3611F2-E91A-4CA5-ACAB-20D5BE658CE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SproomInbox.API.Test", "SproomInbox.API.Test\SproomInbox.API.Test.csproj", "{EE3611F2-E91A-4CA5-ACAB-20D5BE658CE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

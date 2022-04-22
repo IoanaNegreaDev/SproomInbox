@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Client.Services;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace SproomInbox.WebApp.Client.Pages
 {
@@ -15,12 +17,19 @@ namespace SproomInbox.WebApp.Client.Pages
         public DocumentsQueryParameters FilterParameters { get; set; } = new DocumentsQueryParameters();
   
         private IList<DocumentDto> _documents = new List<DocumentDto>();
+        public PagedListMetadata PaginationMetaData { get; set; } = new PagedListMetadata();
         private List<Guid> _selectedIds { get; set; } = new List<Guid>();
         private Dictionary<Guid, bool> _documentExpanded = new Dictionary<Guid, bool>();
         private Dictionary<Guid, bool> _documentChecked = new Dictionary<Guid, bool>();
         private bool _failedToUpdate = false;
 
         protected override async Task OnInitializedAsync()
+        {
+            await RefreshInbox();
+            await base.OnInitializedAsync();
+        }
+
+        private async Task RefreshInbox()
         {
             if (string.IsNullOrEmpty(FilterParameters.UserName))
                 return;
@@ -29,6 +38,13 @@ namespace SproomInbox.WebApp.Client.Pages
             if (response.IsSuccessStatusCode)
                 _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
 
+            PaginationMetaData = JsonSerializer.Deserialize<PagedListMetadata>(response.Headers.GetValues("X-Pagination").First());
+
+           
+            _documentChecked.Clear();
+            _documentExpanded.Clear();
+            _selectedIds.Clear();
+
             bool documentExpanded = false;
             bool documentChecked = false;
             foreach (var document in _documents)
@@ -36,8 +52,8 @@ namespace SproomInbox.WebApp.Client.Pages
                 _documentExpanded.Add(document.Id, documentExpanded);
                 _documentChecked.Add(document.Id, documentChecked);
             }
-
-            await base.OnInitializedAsync();
+ 
+           // StateHasChanged();
         }
         private void OnCheckboxClicked(Guid documentId, object isChecked)
         {
@@ -112,14 +128,13 @@ namespace SproomInbox.WebApp.Client.Pages
 
             return await DocumentService.UpdateDocumentsAsync(updateParameters);
         }
-  
-        private void UpdateDocumentsLocally(string newState)
+
+        private async Task SelectedPage(int page)
         {
-            var documentsToUpdate = _documents?.Where(item => _selectedIds.Contains(item.Id)).ToList();
-            foreach (var document in documentsToUpdate)
-                document.State = newState;          
+            FilterParameters.Page.Current = page;
+            await RefreshInbox();
         }
-      
+     
         private bool IsDocumentFinalState(string state)
         {
             if (Enum.TryParse<StateDto>(state, out var stateValue))

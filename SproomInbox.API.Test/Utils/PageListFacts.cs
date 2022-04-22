@@ -1,5 +1,5 @@
 ﻿using SproomInbox.API.Utils.Paging;
-using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
+using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -25,19 +25,19 @@ namespace SproomInbox.API.Test.Utils
            }.AsQueryable();
        
             PagedListMetadata pagedListDataTest = new PagedListMetadata() { Current = 1, Size = 2 };
-            var returnedPagedList = await PagedList<MockEntity>.Create(testList, pagedListDataTest);
+            var returnedPagedList =  PagedList<MockEntity>.Create(testList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 2);
             Assert.True(returnedPagedList[0].Id == 1 && returnedPagedList[1].Id == 2);
 
             pagedListDataTest = new PagedListMetadata() { Current = 2, Size = 2 };
-            returnedPagedList = await PagedList<MockEntity>.Create(testList, pagedListDataTest);
+            returnedPagedList =  PagedList<MockEntity>.Create(testList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 2);
             Assert.True(returnedPagedList[0].Id == 3 && returnedPagedList[1].Id == 4);
 
             pagedListDataTest = new PagedListMetadata() { Current = 2, Size = 4 };
-            returnedPagedList = await PagedList<MockEntity>.Create(testList, pagedListDataTest);
+            returnedPagedList =  PagedList<MockEntity>.Create(testList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 1);
             Assert.True(returnedPagedList[0].Id == 5);
@@ -56,23 +56,23 @@ namespace SproomInbox.API.Test.Utils
            }.AsQueryable();
 
             PagedListMetadata pagedListDataTest = new PagedListMetadata() { Current = 0, Size = 2 };
-            var returnedPagedList = await PagedList<MockEntity>.Create(testList, pagedListDataTest);
+            var returnedPagedList =  PagedList<MockEntity>.Create(testList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 2);
             Assert.True(returnedPagedList[0].Id == 1 && returnedPagedList[1].Id == 2);
 
             pagedListDataTest = new PagedListMetadata() { Current = 4, Size = 6 };
-            returnedPagedList = await PagedList<MockEntity>.Create(testList, pagedListDataTest);
+            returnedPagedList =  PagedList<MockEntity>.Create(testList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 0);
 
             pagedListDataTest = new PagedListMetadata() { Current = 9, Size = 9 };
-            returnedPagedList = await PagedList<MockEntity>.Create(testList, pagedListDataTest);
+            returnedPagedList =  PagedList<MockEntity>.Create(testList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 0);
 
             pagedListDataTest = new PagedListMetadata() { Current = 9, Size = 0 };
-            returnedPagedList = await PagedList<MockEntity>.Create(testList, pagedListDataTest);
+            returnedPagedList =  PagedList<MockEntity>.Create(testList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 0);
         }
@@ -85,11 +85,11 @@ namespace SproomInbox.API.Test.Utils
             }.AsQueryable(); 
 
             PagedListMetadata pagedListDataTest = new PagedListMetadata() { Current = 0, Size = 2 };
-            var returnedPagedList = await PagedList<MockEntity>.Create(null, pagedListDataTest);
+            var returnedPagedList =  PagedList<MockEntity>.Create(null, pagedListDataTest);
             Assert.Null(returnedPagedList);
       
             pagedListDataTest = new PagedListMetadata() { Current = 4, Size = 6 };
-            returnedPagedList = await PagedList<MockEntity>.Create(emptyTestList, pagedListDataTest);
+            returnedPagedList =  PagedList<MockEntity>.Create(emptyTestList, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
             Assert.True(returnedPagedList.Count == 0);          
         }

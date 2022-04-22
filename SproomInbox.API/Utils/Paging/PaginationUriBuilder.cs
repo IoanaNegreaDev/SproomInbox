@@ -4,34 +4,34 @@ namespace SproomInbox.API.Utils.Paging
 {
     public class PaginationUriBuilder : IPaginationUriBuilder
     {
-        public object BuildPaginationMetadata<T>(IUrlHelper urlHelper, 
+        public PagedListMetadata BuildPaginationMetadata<T>(IUrlHelper urlHelper, 
                                                 string routeName, 
                                                 DocumentsQueryParameters queryParameters,
                                                 PagedList<T> pagedList)
         {
 
-            var previousPageLink = pagedList.HasPrevious ?
+            var previousPageLink = pagedList.PagedMetadata.HasPrevious ?
                 CreateDocumentsResourceUri(urlHelper,
                                         routeName,
                                         queryParameters,
                                         PageNavigation.PreviousPage)
-                 : null;
+                 : string.Empty;
 
-            var nextPageLink = pagedList.HasNext ?
+            var nextPageLink = pagedList.PagedMetadata.HasNext ?
                 CreateDocumentsResourceUri(urlHelper,
                                          routeName,
                                         queryParameters,
                                         PageNavigation.NextPage)
-                 : null;
+                 : string.Empty;
 
-            var paginationMetadata = new
+            var paginationMetadata = new PagedListMetadata
             {
-                totalCount = pagedList.TotalCount,
-                pageSize = pagedList.PagedMetadata.Size,
-                currentPage = pagedList.PagedMetadata.Current,
-                totalPages = pagedList.TotalPages,
-                previousPageLink,
-                nextPageLink
+                TotalCount = pagedList.PagedMetadata.TotalCount,
+                Size = pagedList.PagedMetadata.Size,
+                Current = pagedList.PagedMetadata.Current,
+                TotalPages = pagedList.PagedMetadata.TotalPages,
+                PreviousPageLink = previousPageLink,
+                NextPageLink = nextPageLink
             };
 
             return paginationMetadata;

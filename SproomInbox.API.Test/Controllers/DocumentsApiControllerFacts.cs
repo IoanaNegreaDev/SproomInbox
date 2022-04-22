@@ -9,7 +9,6 @@ using SproomInbox.API.Utils.ErrorHandling;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
-using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

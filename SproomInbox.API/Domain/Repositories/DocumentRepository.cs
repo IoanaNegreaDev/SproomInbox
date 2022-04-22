@@ -2,7 +2,6 @@
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
-using SproomInbox.WebApp.Shared.Resources.Parametrization.Paging;
 
 namespace SproomInbox.API.Domain.Repositories
 {
@@ -24,7 +23,7 @@ namespace SproomInbox.API.Domain.Repositories
             PagedListMetadata defaultPagingMetadata = new PagedListMetadata();
             var collection = _table as IQueryable<Document>;
             collection = collection.Include(document => document.StateHistory);
-            return await PagedList<Document>.Create(collection, defaultPagingMetadata);
+            return PagedList<Document>.Create(collection, defaultPagingMetadata);
         }
         public async Task<PagedList<Document>> ListAsync(DocumentsQueryParameters queryParameters)
         {
@@ -36,7 +35,7 @@ namespace SproomInbox.API.Domain.Repositories
             collection = ApplySearch(queryParameters.Search, collection);
             collection = collection.Include(document => document.StateHistory);
 
-            return await PagedList<Document>.Create(collection, queryParameters.Page);
+            return PagedList<Document>.Create(collection, queryParameters.Page);
         }
         private IQueryable<Document> ApplyFilter(DocumentsQueryParameters queryParameters, 
                                                  IQueryable<Document> collection)

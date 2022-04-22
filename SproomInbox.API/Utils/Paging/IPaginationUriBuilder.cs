@@ -5,6 +5,6 @@ namespace SproomInbox.API.Utils.Paging
 {
     public interface IPaginationUriBuilder
     {
-        object BuildPaginationMetadata<T>(IUrlHelper urlHelper, string routeName, DocumentsQueryParameters queryParameters, PagedList<T> pagedList);
+        PagedListMetadata BuildPaginationMetadata<T>(IUrlHelper urlHelper, string routeName, DocumentsQueryParameters queryParameters, PagedList<T> pagedList);
     }
 }

@@ -1,13 +1,15 @@
 using AutoMapper;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Validation;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
-using System.Text.Json;
+using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SproomInbox.API
 {
@@ -61,7 +63,7 @@ namespace SproomInbox.API
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsAsync(
+        public async Task<ActionResult<PagedList<DocumentDto>>> GetDocumentsAsync(
                                                                     [FromQuery] DocumentsQueryParameters queryParameters)
         {
             // user whould be authenticated
@@ -191,7 +193,7 @@ namespace SproomInbox.API
                                                                                     queryParameters,
                                                                                     pagedList);
             if (Response != null && Response.Headers != null)
-                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
         }
     }
 }

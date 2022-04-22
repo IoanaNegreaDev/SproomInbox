@@ -5,7 +5,7 @@
 @if (_documents.Count != 0)
 {
     <p></p>
-    <p>@_documents.Count documents. @_selectedIds.Count are selected.</p>
+    <p>@_documents.Count documents of @PaginationMetaData.TotalCount. @_selectedIds.Count are selected.</p>
 
     <table class="table" align="left" >
         <thead class="thead-light">
@@ -56,8 +56,7 @@
                                     </tr>
                                 }
                            </tbody>
-                        </table>    
-                    
+                        </table>                      
                  }
                   <tr></tr>
             }
@@ -77,6 +76,12 @@
             &nbsp;
         <button class="btn btn-primary border-radius: 30px alert-primary" disabled=@(@_selectedIds.Count>0 ? false : true) @onclick="OnReject"> Reject </button>
     </div>
+
+    <div class="row">
+    <div class="col">
+        <Pagination MetaData=@PaginationMetaData Spread="2" SelectedPage=@SelectedPage />
+    </div>
+</div>
 } 
 else {
     <p></p>

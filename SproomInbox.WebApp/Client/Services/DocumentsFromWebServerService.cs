@@ -1,4 +1,5 @@
-﻿using SproomInbox.WebApp.Shared.Resources.Parametrization;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Collections.Specialized;
 using System.Text;
 using System.Text.Json;
@@ -25,14 +26,16 @@ namespace SproomInbox.WebApp.Client.Services
             queryPairs.Add("username", queryParameters.UserName);
             queryPairs.Add("type", queryParameters.Type);
             queryPairs.Add("state", queryParameters.State);
+            queryPairs.Add("currentPage", queryParameters.Page.Current.ToString());
 
             string query = string.Empty;
             if (queryPairs.Count > 0)
                 query = "?" + queryPairs.ToString();
 
             string uri = _httpClient.BaseAddress + "documents" + query;
-
+            
             var httpResponseMessage = await _httpClient.GetAsync(uri);
+    
             return httpResponseMessage;
         }
 

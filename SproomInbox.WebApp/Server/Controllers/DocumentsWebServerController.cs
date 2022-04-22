@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Server.Services;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
@@ -21,13 +22,15 @@ namespace SproomInbox.WebApp.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments(string userName, string? type, string? state)
+        public async Task<ActionResult<PagedList<DocumentDto>>> GetDocuments(string userName, string? type, string? state, string? currentPage)
         {
+            Int32.TryParse(currentPage, out var current);
             var queryParameters = new DocumentsQueryParameters()
             {
                 UserName = userName,
                 Type = type,
-                State = state   
+                State = state,
+                Page = new PagedListMetadata() { Current = current }
             };
 
             var response = await _documentService.FetchDocumentsAsync(queryParameters);
@@ -35,9 +38,13 @@ namespace SproomInbox.WebApp.Server.Controllers
             if (!response.IsSuccessStatusCode)
                 return BadRequest();
 
-            var translatedResponse = await response.Content.ReadFromJsonAsync<IEnumerable<DocumentDto>>() ??
+            var translatedResponse = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ??
                                             Enumerable.Empty<DocumentDto>();
-            return Ok(translatedResponse);
+            var pagination = JsonSerializer.Deserialize<PagedListMetadata>(response.Headers.GetValues("X-Pagination").First());
+        
+            PagedList<DocumentDto> pagedList = new PagedList<DocumentDto>(translatedResponse.ToList(), pagination);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+            return Ok(pagedList);
        }
 
         [HttpPut]
