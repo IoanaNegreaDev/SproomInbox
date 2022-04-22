@@ -2,6 +2,9 @@
 
 namespace SproomInbox.WebApp.Shared.Resources
 {
+    /// <summary>
+    /// The available states for a document
+    /// </summary>
     public enum StateDto : byte
     {
         [Description("Received")]

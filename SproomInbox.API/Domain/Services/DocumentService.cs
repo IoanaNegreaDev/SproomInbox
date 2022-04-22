@@ -57,8 +57,6 @@ namespace SproomInbox.API.Domain.Services
 
             foreach (var documentId in updateParameters.DocumentIds)
             {
-                // documentId already validated by fluent validator
-              //  var IdValue = Guid.Parse(documentId);   
                 DocumentsFindByIdParameters findDocumentByIdParameters = new DocumentsFindByIdParameters()
                 {
                     Id = documentId,
@@ -67,7 +65,7 @@ namespace SproomInbox.API.Domain.Services
 
                 var dbDocument = await _unitOfWork.DocumentRepository.FindByIdAsync(findDocumentByIdParameters);
                 if (dbDocument == null)
-                    return new Status<IEnumerable<Document>>(HttpStatusCode.BadRequest, 
+                    return new Status<IEnumerable<Document>>(HttpStatusCode.NotFound, 
                                             $"Document {findDocumentByIdParameters.Id.ToString()} not found.");
 
                 if (dbDocument.StateId != State.Received)

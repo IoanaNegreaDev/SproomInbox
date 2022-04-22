@@ -1,6 +1,5 @@
 using AutoMapper;
 using FluentValidation.AspNetCore;
-using Marvin.Cache.Headers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SproomInbox.API.Domain;
@@ -14,15 +13,17 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddDbContext<SproomDocumentsDbContext>(options =>
                        options.UseSqlServer(builder.Configuration.GetConnectionString("SproomDocumentsDbConnection")));
 builder.Services.AddTransient<DataSeeder>();
+builder.Services.AddMvc(setupAction =>
+{
+    setupAction.ReturnHttpNotAcceptable = true;
+ });
 
 var mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new ModelDtoMapper()));
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
-
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IDocumentStateRepository, DocumentStateRepository>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
@@ -40,17 +41,19 @@ builder.Services.AddControllers()
                     options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                 });
 
-//builder.Services.AddResponseCaching();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Version = "v1.0",
+        Version = "v1",
         Title = "Sproom Documents API",
-        Description = "Visma Interview Assignment"
+        Description = "Visma Interview Assignment",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+        {
+            Email = "ioana.ursu@gmail.com",
+            Name = "Ioana Negrea",
+        },
     });
 
     var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -69,7 +72,7 @@ if (app.Environment.IsDevelopment())
     {
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/swagger/SproomDocumentsAPISpecification/swagger.json", "v1");
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             options.RoutePrefix = string.Empty;
         });
     }); 
@@ -77,14 +80,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-
-//app.UseResponseCaching();
-
-app.UseRouting();
-
-//app.UseHttpCacheHeaders();
 app.UseMiddleware<ErrorHandlerMiddleware>();
-
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

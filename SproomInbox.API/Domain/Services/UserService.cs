@@ -1,8 +1,6 @@
 ﻿using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Utils.ErrorHandling;
-using SproomInbox.API.Utils.Paging;
-using System.Net;
 
 namespace SproomInbox.API.Domain.Services
 {
@@ -22,7 +20,6 @@ namespace SproomInbox.API.Domain.Services
                 throw new Exception("Null User Repository.");
 
             var response = await _unitOfWork.UserRepository.ListAsync();
-
             if (response == null)
                 throw new Exception("Failed to get users. Internal error.");
 

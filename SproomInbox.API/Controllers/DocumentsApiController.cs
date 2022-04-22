@@ -11,6 +11,8 @@ using System.Text.Json;
 
 namespace SproomInbox.API
 {
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [ApiController]
     [Route("api/v1.0/documents")]
     public class DocumentsApiController : ControllerBase
@@ -40,9 +42,25 @@ namespace SproomInbox.API
             _logger = logger;
         }
 
+
+        /// <summary>
+        /// Gets Sproom documents
+        /// </summary>
+        /// <param name="queryParameters.UserName">The username of an user. Required (until authentication is implemented)</param>
+        /// <param name="queryParameters.Type">The type of the desired documents.Optional filter</param>
+        /// <param name="State">The state of the desired documents.Optional filter</param>
+        /// <param name="Search">A search string. Optional</param>
+        /// <param name="Page.Current">The index of the current page, 1 based. Optional.Default.</param>
+        /// <param name="Page.Size">The number of documents/page.Max page size is 50. Default page size is 10. Optional.</param>
+        /// <returns>An ActionResult of type IEnumerable of DocumentDto</returns>
+        /// <response code="200">Returns the requested list of documents</response>     
+        /// 
         [HttpGet(Name = "GetDocuments")]
-        [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
-        [HttpCacheValidation(MustRevalidate = true, NoCache = false, Vary = new[] { "Accept", "Accept-Language", "Accept-Encoding", "UserName", "Type", "State" })]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsAsync(
                                                                     [FromQuery] DocumentsQueryParameters queryParameters)
         {
@@ -66,7 +84,19 @@ namespace SproomInbox.API
             return Ok(documentsDtoPagedList);
         }
 
+
+        /// <summary>
+        /// Updates the state of a single document, identified by its id
+        /// </summary>
+        /// <param name="id">The id of the document to be located</param>
+        /// <param name="userName">The username of an user. Required (until authentication is implemented)</param>
+        /// <returns>An ActionResult of type IEnumerable of Document</returns>
+        /// <response code="200">Returns the requested document</response>     
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocumentsById(Guid id, string userName)
         {
             var findByIdParameters = new DocumentsFindByIdParameters() { Id = id, UserName = userName };
@@ -82,6 +112,25 @@ namespace SproomInbox.API
             return Ok(documentDto);
         }
 
+
+        /// <summary>
+        /// Updates the state of a single document, identified by its id
+        /// </summary>
+        /// <param name="id">The id of the document to be updated</param>
+        /// <param name="userName">The username of an user. Required (until authentication is implemented)</param>
+        /// <param name="newState">The only value of a document that can be updated. Allowed values: Approved and Rejected </param>
+        /// <returns>An ActionResult</returns>
+        /// <remarks>
+        ///     If the document is already in Approved or Rejected state, the update will not be performed.
+        ///     Allowed values for update: Approved and Rejected.
+        /// </remarks>
+        /// <response code="200">Signals a successful update</response>     
+        /// <response code="422">Signals that the updtate to the new document state is not allowed </response>     
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAsync(Guid id, string userName, string newState)
         {
@@ -101,10 +150,28 @@ namespace SproomInbox.API
                 return StatusCode((int)response.StatusCode, response.Message);
 
             return Ok();
-
         }
 
+        /// <summary>
+        /// Updates the state of a list of documents
+        /// </summary>
+        /// <param name="DocumentIds">The list of the ids of the documents to be updated</param>
+        /// <param name="UserName">The username of an user. Required (until authentication is implemented)</param>
+        /// <param name="NewState">The only value of a document that can be updated. Allowed values: Approved and Rejected </param>
+        /// <returns>An ActionResult</returns>
+        /// <remarks>
+        ///     If ONE document is already in Approved or Rejected state, the update will fail.
+        ///     If ONE document is not found, the update will fail.
+        /// </remarks>
+        /// <response code="200">Signals a successful update</response>     
+        /// <response code="422">Signals that the updtate to the new document state is not allowed </response>     
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+
         public async Task<ActionResult> Update(DocumentsUpdateStatusParameters updateParameters)
         {
             var response = await _documentsService.UpdateAsync(updateParameters);

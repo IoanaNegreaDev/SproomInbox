@@ -51,8 +51,8 @@ namespace SproomInbox.API.Utils.Paging
                         {
                             pageNumber = queryParameters.Page.Current - 1,
                             pageSize = queryParameters.Page.Size,
-                            searchQuery = queryParameters.Search,
-                            fields = queryParameters.Fields
+                            searchQuery = queryParameters.Search
+                         //  fields = queryParameters.Fields
                         });
                 case PageNavigation.NextPage:
                     return urlHelper.Link(routeName,
@@ -60,8 +60,8 @@ namespace SproomInbox.API.Utils.Paging
                         {                           
                             pageNumber = queryParameters.Page.Current + 1,
                             pageSize = queryParameters.Page.Size,                         
-                            searchQuery = queryParameters.Search,
-                            fields = queryParameters.Fields
+                            searchQuery = queryParameters.Search
+                        //    fields = queryParameters.Fields
                         });
                 case PageNavigation.Current:
                 default:
@@ -71,7 +71,7 @@ namespace SproomInbox.API.Utils.Paging
                             pageNumber = queryParameters.Page.Current,
                             pageSize = queryParameters.Page.Size,                          
                             searchQuery = queryParameters.Search,
-                            fields = queryParameters.Fields
+                       //     fields = queryParameters.Fields
                         });
             };
 

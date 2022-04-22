@@ -7,6 +7,7 @@ using SproomInbox.WebApp.Shared.Resources;
 
 namespace SproomInbox.API.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
     [Route("api/v1.0/users")]
     public class UsersApiController : ControllerBase
@@ -33,9 +34,18 @@ namespace SproomInbox.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
-        [HttpCacheValidation(MustRevalidate = true, NoCache = false)]
+        /// <summary>
+        /// Gets all the users from the database
+        /// </summary>
+        /// <returns>An ActionResult of type IEnumerable of UserDto</returns>
+        /// <response code="200">Returns the list of users</response>     
+        [HttpGet(Name = "GetUsers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        // [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 70)]
+        // [HttpCacheValidation(MustRevalidate = true, NoCache = false)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {     
             var response = await _userService.ListUsersAsync();
