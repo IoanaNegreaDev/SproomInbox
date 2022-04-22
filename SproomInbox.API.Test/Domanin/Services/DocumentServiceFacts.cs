@@ -10,6 +10,7 @@ using Xunit;
 
 namespace SproomInbox.API.Test.Domanin.Services
 {
+    // TO DO more tests
     public class DocumentServiceFacts
     {
         [Fact]
@@ -151,7 +152,7 @@ namespace SproomInbox.API.Test.Domanin.Services
 
             documentRepositoryMock.SetupSequence(method => method.FindByIdAsync(It.IsAny<DocumentsFindByIdParameters>()))
                      .ReturnsAsync(mockList[0])
-                     .ReturnsAsync((Document)null); 
+                     .ReturnsAsync((Document?)null); 
 
             documentStateRepositoryMock.SetupSequence(method => method.AddAsync(It.IsAny<DocumentState>()))
                      .ReturnsAsync(mockDocumentState)
@@ -176,4 +177,5 @@ namespace SproomInbox.API.Test.Domanin.Services
             #endregion
         }
     }
+    // etc etc.....
 }

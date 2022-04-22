@@ -7,47 +7,19 @@ using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.ErrorHandling;
 using SproomInbox.API.Utils.Paging;
+using SproomInbox.WebApp.Shared.Pagination;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Xunit;
 
 namespace SproomInbox.API.Test
 {
+    // TO DO more tests
     public class DocumentsApiControllerFacts
     {
-        [Fact]
-        public void Constructor_OnNullParameters_ThrowsException()
-        {
-            Mock<ILogger<DocumentsApiController>> loggerMock = new Mock<ILogger<DocumentsApiController>>();
-            Mock<IDocumentService> documentServiceMock = new Mock<IDocumentService>();
-            Mock<IPaginationUriBuilder> paginationUriBuilderMock = new Mock<IPaginationUriBuilder>();
-            Mock<IMapper> mapperMock = new Mock<IMapper>();
-
-            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(null,
-                                                                paginationUriBuilderMock.Object,
-                                                                mapperMock.Object,
-                                                                loggerMock.Object));
-
-            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(documentServiceMock.Object,
-                                                             null,
-                                                             mapperMock.Object,
-                                                             loggerMock.Object));
-
-            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(documentServiceMock.Object,
-                                                             paginationUriBuilderMock.Object,
-                                                             null,
-                                                             loggerMock.Object));
-
-            Assert.Throws<ArgumentNullException>(() => new DocumentsApiController(documentServiceMock.Object,
-                                                             paginationUriBuilderMock.Object,
-                                                             mapperMock.Object,
-                                                             null));         
-        }
-
         [Fact]
         public async void GetDocuments_ValidParameters_ReturnsPagedList_And_StatusOK()
         {
@@ -275,5 +247,7 @@ namespace SproomInbox.API.Test
             Assert.IsType<NoContentResult>(response.Result);
             Assert.True(documentController.Response.Headers["X-Pagination"].Count == 0);
             #endregion  
-        }    }  
+        }   
+    } 
+    // etc etc
 }

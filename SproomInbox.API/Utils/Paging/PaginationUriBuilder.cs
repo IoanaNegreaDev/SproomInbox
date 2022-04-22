@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SproomInbox.WebApp.Shared.Pagination;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 namespace SproomInbox.API.Utils.Paging
 {
@@ -9,15 +10,17 @@ namespace SproomInbox.API.Utils.Paging
                                                 DocumentsQueryParameters queryParameters,
                                                 PagedList<T> pagedList)
         {
+            var previousPageLink = string.Empty;
+            var nextPageLink = string.Empty;
 
-            var previousPageLink = pagedList.PagedMetadata.HasPrevious ?
+            previousPageLink = pagedList.PagedMetadata.HasPrevious ?
                 CreateDocumentsResourceUri(urlHelper,
                                         routeName,
                                         queryParameters,
                                         PageNavigation.PreviousPage)
                  : string.Empty;
 
-            var nextPageLink = pagedList.PagedMetadata.HasNext ?
+            nextPageLink = pagedList.PagedMetadata.HasNext ?
                 CreateDocumentsResourceUri(urlHelper,
                                          routeName,
                                         queryParameters,
@@ -30,8 +33,8 @@ namespace SproomInbox.API.Utils.Paging
                 Size = pagedList.PagedMetadata.Size,
                 Current = pagedList.PagedMetadata.Current,
                 TotalPages = pagedList.PagedMetadata.TotalPages,
-                PreviousPageLink = previousPageLink,
-                NextPageLink = nextPageLink
+                PreviousPageLink = previousPageLink??string.Empty,
+                NextPageLink = nextPageLink??string.Empty
             };
 
             return paginationMetadata;

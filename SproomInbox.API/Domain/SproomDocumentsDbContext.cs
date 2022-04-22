@@ -60,7 +60,7 @@ namespace SproomInbox.API.Domain
 
         void OnModelCreatingPartial(ModelBuilder modelBuilder)
         {
-       /*     modelBuilder.Entity<User>().HasData
+           /* modelBuilder.Entity<User>().HasData
             (
                 new User
                 {

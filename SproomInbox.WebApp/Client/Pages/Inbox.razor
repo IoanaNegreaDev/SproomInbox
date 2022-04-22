@@ -5,7 +5,7 @@
 @if (_documents.Count != 0)
 {
     <p></p>
-    <p>@_documents.Count documents of @PaginationMetaData.TotalCount. @_selectedIds.Count are selected.</p>
+    <p  align="center">@((PaginationMetaData.Current - 1)*PaginationMetaData.Size + 1) - @((PaginationMetaData.Current - 1)*PaginationMetaData.Size + _documents.Count()) of @PaginationMetaData.TotalCount.</p>
 
     <table class="table" align="left" >
         <thead class="thead-light">
@@ -88,8 +88,3 @@ else {
     <p><em>...</em></p>
 }
 
-@code
-{
-
-    
-}

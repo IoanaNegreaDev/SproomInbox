@@ -14,6 +14,6 @@ namespace SproomInbox.API.Domain.Models
 
         [ForeignKey("DocumentId")]
         [InverseProperty("StateHistory")]
-        public virtual Document Document { get; set; } = null!;
+        public virtual Document Document { get; set; }
     }
 }

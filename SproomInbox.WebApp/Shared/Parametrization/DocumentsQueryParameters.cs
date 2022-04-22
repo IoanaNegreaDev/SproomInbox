@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SproomInbox.WebApp.Shared.Pagination;
+using System.ComponentModel.DataAnnotations;
 
 namespace SproomInbox.WebApp.Shared.Resources.Parametrization
 {

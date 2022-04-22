@@ -20,6 +20,6 @@ namespace SproomInbox.API.Domain.Models
 
         [ForeignKey("UserId")]
         [InverseProperty("Documents")]
-        public virtual User User { get; set; } = new User();
+        public virtual User User { get; set; }
     }
 }

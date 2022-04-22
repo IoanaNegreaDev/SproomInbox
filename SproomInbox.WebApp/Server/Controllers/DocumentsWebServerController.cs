@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Server.Services;
+using SproomInbox.WebApp.Shared.Pagination;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
-using System.Text;
+using System.Net;
 using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -24,7 +24,9 @@ namespace SproomInbox.WebApp.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<DocumentDto>>> GetDocuments(string userName, string? type, string? state, string? currentPage)
         {
-            Int32.TryParse(currentPage, out var current);
+            if (!Int32.TryParse(currentPage, out var current))
+                current = 1;
+
             var queryParameters = new DocumentsQueryParameters()
             {
                 UserName = userName,
@@ -35,7 +37,9 @@ namespace SproomInbox.WebApp.Server.Controllers
 
             var response = await _documentService.FetchDocumentsAsync(queryParameters);
             
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode == HttpStatusCode.NoContent)
+                return NoContent();
+            if (response.StatusCode != HttpStatusCode.OK)
                 return BadRequest();
 
             var translatedResponse = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ??

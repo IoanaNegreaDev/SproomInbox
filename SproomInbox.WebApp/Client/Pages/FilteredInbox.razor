@@ -5,6 +5,7 @@
 
 <h1>Sproom Inbox</h1>
 
+
 @if (_users != null)
 {
     <section class="state-selector">
@@ -39,6 +40,8 @@ else {
 
 @if (_needsRefreshing)
 {
+    <p></p>
+    <p></p>
     <Inbox FilterParameters=FilterParameters />
     _needsRefreshing = false;
 }

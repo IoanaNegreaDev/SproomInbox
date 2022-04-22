@@ -1,5 +1,4 @@
-﻿using SproomInbox.API.Utils.Paging;
-using SproomInbox.WebApp.Shared.Resources.Parametrization;
+﻿using SproomInbox.WebApp.Shared.Pagination;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -10,10 +9,11 @@ namespace SproomInbox.API.Test.Utils
     {
         public int Id;
     }
+    // TO DO split the tests for a better locatization of errors + ADD PagedListMetadata tests
     public class PageListFacts
     {
         [Fact]
-        public async void Create_Returns_PageList_From_InputList_ValidInput()
+        public void Create_ValidInput_Returns_PageList()
         {
            var testList =new List<MockEntity>()
             {
@@ -44,7 +44,7 @@ namespace SproomInbox.API.Test.Utils
         }
 
         [Fact]
-        public async void Create_Returns_PageList_From_InputList_InvalidPageInfo()
+        public void Create_InvalidPageMetadataValues_Returns_PageList()
         {
             var testList = new List<MockEntity>()
             {
@@ -78,7 +78,7 @@ namespace SproomInbox.API.Test.Utils
         }
 
         [Fact]
-        public async void Create_Returns_PageList_From_InputList_NUllOr0QueryableList()
+        public void Create_InputList_Null_Or_0_Returns_EmptyPageList()
         {
             var emptyTestList = new List<MockEntity>()
             {          
@@ -86,7 +86,7 @@ namespace SproomInbox.API.Test.Utils
 
             PagedListMetadata pagedListDataTest = new PagedListMetadata() { Current = 0, Size = 2 };
             var returnedPagedList =  PagedList<MockEntity>.Create(null, pagedListDataTest);
-            Assert.Null(returnedPagedList);
+            Assert.NotNull(returnedPagedList);
       
             pagedListDataTest = new PagedListMetadata() { Current = 4, Size = 6 };
             returnedPagedList =  PagedList<MockEntity>.Create(emptyTestList, pagedListDataTest);
@@ -94,4 +94,6 @@ namespace SproomInbox.API.Test.Utils
             Assert.True(returnedPagedList.Count == 0);          
         }
     }
+
+    // etc etc....
 }

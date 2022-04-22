@@ -19,21 +19,18 @@ namespace SproomInbox.API.Domain
                 {
                     new User
                     {
-                        Id = 1,
                         FirstName = "Paul",
                         LastName = "Atreides",
                         UserName = "MuadDib"
                     },
                     new User
                     {
-                        Id = 2,
                         FirstName = "Frodo",
                         LastName = "Baggins",
                         UserName = "Hobbit"
                     },
                     new User
                     {
-                        Id = 3,
                         FirstName = "Harry",
                         LastName = "Potter",
                         UserName = "Wizard"
@@ -52,7 +49,6 @@ namespace SproomInbox.API.Domain
                 {
                     var document = new Document
                     {
-                        Id = Guid.NewGuid(),
                         UserId = rnd.Next(1, 4),
                         TypeId = (DocumentType)rnd.Next(1, 3),
                         StateId = State.Received,

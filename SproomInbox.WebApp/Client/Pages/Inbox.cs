@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using SproomInbox.API.Utils.Paging;
 using SproomInbox.WebApp.Client.Services;
+using SproomInbox.WebApp.Shared.Pagination;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Net.Http.Json;
@@ -35,12 +35,18 @@ namespace SproomInbox.WebApp.Client.Pages
                 return;
 
             var response = await DocumentService.FetchDocumentsAsync(FilterParameters);
-            if (response.IsSuccessStatusCode)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
                 _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
 
-            PaginationMetaData = JsonSerializer.Deserialize<PagedListMetadata>(response.Headers.GetValues("X-Pagination").First());
+                PaginationMetaData = JsonSerializer.Deserialize<PagedListMetadata>(response.Headers.GetValues("X-Pagination").First());
 
-           
+                ResetData();
+            }
+        }
+
+        private void ResetData()
+        {
             _documentChecked.Clear();
             _documentExpanded.Clear();
             _selectedIds.Clear();
@@ -52,8 +58,6 @@ namespace SproomInbox.WebApp.Client.Pages
                 _documentExpanded.Add(document.Id, documentExpanded);
                 _documentChecked.Add(document.Id, documentChecked);
             }
- 
-           // StateHasChanged();
         }
         private void OnCheckboxClicked(Guid documentId, object isChecked)
         {
@@ -84,13 +88,7 @@ namespace SproomInbox.WebApp.Client.Pages
             if (!response.IsSuccessStatusCode)
                 _failedToUpdate = true;
 
-            response = await DocumentService.FetchDocumentsAsync(FilterParameters);
-            _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
-
-            foreach (var documentId in _documentChecked.Keys)
-                _documentChecked[documentId] = false;
-
-            _selectedIds.Clear();
+            await RefreshInbox();
             StateHasChanged();
         }
         private async Task OnReject()
@@ -107,14 +105,7 @@ namespace SproomInbox.WebApp.Client.Pages
             if (!response.IsSuccessStatusCode)
                 _failedToUpdate = true;
 
-            response = await DocumentService.FetchDocumentsAsync(FilterParameters);
-            if (response.IsSuccessStatusCode)
-                _documents = await response.Content.ReadFromJsonAsync<List<DocumentDto>>() ?? new List<DocumentDto>();
-
-            foreach (var documentId in _documentChecked.Keys)
-                _documentChecked[documentId] = false;
-
-            _selectedIds.Clear();
+            await RefreshInbox();
             StateHasChanged();
         }
         private async Task<HttpResponseMessage> UpdateDocumentsAsync(string newState)

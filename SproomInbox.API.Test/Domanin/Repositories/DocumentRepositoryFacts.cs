@@ -21,27 +21,12 @@ namespace SproomInbox.API.Test.Domanin.Repositories
 
             var databaseContext = new SproomDocumentsDbContext(options);
             databaseContext.Database.EnsureCreated();
+
             if (databaseContext.Documents.Count() <= 0)
             {
                 var id1 = Guid.NewGuid();
                 var id2 = Guid.NewGuid();
-                var id3 = Guid.NewGuid();
-
-                databaseContext.Users.Add(new User()
-                {
-                    Id = 1,
-                    UserName = "user1",
-                    FirstName = "first1",
-                    LastName = "last1",
-                });
-
-                databaseContext.Users.Add(new User()
-                {
-                    Id = 2,
-                    UserName = "user2",
-                    FirstName = "first2",
-                    LastName = "last2",
-                });
+                var id3 = Guid.NewGuid();  
 
                 databaseContext.Documents.Add(new Document()
                 {
@@ -72,7 +57,7 @@ namespace SproomInbox.API.Test.Domanin.Repositories
                 });
 
                 databaseContext.Documents.Add(new Document()
-                {
+                {               
                     Id = id3,
                     TypeId = DocumentType.Invoice,
                     StateId = State.Rejected,
@@ -89,9 +74,25 @@ namespace SproomInbox.API.Test.Domanin.Repositories
                     }
                 });
 
+                databaseContext.Users.Add(new User()
+                {
+                    Id = 1,
+                    UserName = "user1",
+                    FirstName = "first1",
+                    LastName = "last1",
+                });
+
+                databaseContext.Users.Add(new User()
+                {
+                    Id = 2,
+                    UserName = "user2",
+                    FirstName = "first2",
+                    LastName = "last2",
+                });
+
                 databaseContext.SaveChanges();
             }
-            return databaseContext;
+            return databaseContext; 
         }
 
         [Fact]
@@ -101,6 +102,7 @@ namespace SproomInbox.API.Test.Domanin.Repositories
             DocumentRepository repository = new DocumentRepository(dbInMemoryContext);
             var response = await repository.ListAsync(null);
             Assert.True(response.Count == 3);
+            dbInMemoryContext.Dispose();
         }
      
         [Fact]
@@ -111,6 +113,7 @@ namespace SproomInbox.API.Test.Domanin.Repositories
             DocumentsQueryParameters documentsQueryParameters = new DocumentsQueryParameters();
             var response = await repository.ListAsync(documentsQueryParameters);
             Assert.True(response.Count == 3);
+            dbInMemoryContext.Dispose();
         }
 
         [Fact]
@@ -122,6 +125,7 @@ namespace SproomInbox.API.Test.Domanin.Repositories
             { UserName = "user1" };
             var response = await repository.ListAsync(documentsQueryParameters);
             Assert.True(response.Count == 2);
+            dbInMemoryContext.Dispose();
         }
 
         [Fact]

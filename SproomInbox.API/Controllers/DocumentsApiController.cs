@@ -6,6 +6,7 @@ using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.Paging;
 using SproomInbox.API.Utils.Validation;
+using SproomInbox.WebApp.Shared.Pagination;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Text;
@@ -48,8 +49,8 @@ namespace SproomInbox.API
         /// <summary>
         /// Gets Sproom documents
         /// </summary>
-        /// <param name="queryParameters.UserName">The username of an user. Required (until authentication is implemented)</param>
-        /// <param name="queryParameters.Type">The type of the desired documents.Optional filter</param>
+        /// <param name="UserName">The username of an user. Required (until authentication is implemented)</param>
+        /// <param name="Type">The type of the desired documents.Optional filter</param>
         /// <param name="State">The state of the desired documents.Optional filter</param>
         /// <param name="Search">A search string. Optional</param>
         /// <param name="Page.Current">The index of the current page, 1 based. Optional.Default.</param>
@@ -173,7 +174,6 @@ namespace SproomInbox.API
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-
         public async Task<ActionResult> Update(DocumentsUpdateStatusParameters updateParameters)
         {
             var response = await _documentsService.UpdateAsync(updateParameters);

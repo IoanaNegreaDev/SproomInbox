@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SproomInbox.API.Domain.Models;
-using SproomInbox.API.Utils.Paging;
+using SproomInbox.WebApp.Shared.Pagination;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 
 namespace SproomInbox.API.Domain.Repositories
@@ -23,7 +23,7 @@ namespace SproomInbox.API.Domain.Repositories
             PagedListMetadata defaultPagingMetadata = new PagedListMetadata();
             var collection = _table as IQueryable<Document>;
             collection = collection.Include(document => document.StateHistory);
-            return PagedList<Document>.Create(collection, defaultPagingMetadata);
+            return await ApplyPaginationAsync(defaultPagingMetadata, collection);
         }
         public async Task<PagedList<Document>> ListAsync(DocumentsQueryParameters queryParameters)
         {
@@ -35,8 +35,9 @@ namespace SproomInbox.API.Domain.Repositories
             collection = ApplySearch(queryParameters.Search, collection);
             collection = collection.Include(document => document.StateHistory);
 
-            return PagedList<Document>.Create(collection, queryParameters.Page);
+            return await ApplyPaginationAsync(queryParameters.Page, collection);
         }
+
         private IQueryable<Document> ApplyFilter(DocumentsQueryParameters queryParameters, 
                                                  IQueryable<Document> collection)
         {
@@ -84,6 +85,22 @@ namespace SproomInbox.API.Domain.Repositories
             }
             return collection;
         }
+
+        private async Task<PagedList<Document>> ApplyPaginationAsync(PagedListMetadata pagedMetadata,
+                                              IQueryable<Document> collection)
+        {
+            if (pagedMetadata == null)
+                pagedMetadata = new PagedListMetadata();
+
+            pagedMetadata.TotalCount = collection.Count();
+            pagedMetadata.TotalPages = (int)Math.Ceiling(pagedMetadata.TotalCount / (double)pagedMetadata.Size);
+
+            var items = await collection.Skip((pagedMetadata.Current - 1) * pagedMetadata.Size).Take(pagedMetadata.Size)
+                                        .ToListAsync();
+
+            return new PagedList<Document>(items, pagedMetadata);
+        }
+
         public async Task<Document?> FindByIdAsync(DocumentsFindByIdParameters findParameters)
         {
             if (findParameters == null)
