@@ -139,7 +139,7 @@ namespace SproomInbox.API
         {
             if (!StateValidityChecker.IsValid(newState))
                 return BadRequest($"Invalid State value. Must be not null or { Enum.GetName<State>(State.Received)}. " +
-                                  $"Available tates: {String.Join(", ", Enum.GetNames<State>())} .");
+                                  $"Available states: {String.Join(", ", Enum.GetNames<State>())} .");
 
             var updateParameters = new DocumentsUpdateStatusParameters()
             {

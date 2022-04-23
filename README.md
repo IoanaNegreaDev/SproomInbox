@@ -24,17 +24,17 @@ I kept the structure of the projects as provided and also the model and the work
    final states.
  - when querying the database for documents I choose to eager load the document states (history)
  - implements only the required end points: 
-		GET documents?query ( should contain at least {username})
-		GET documents/{id} {username}
-		PUT documents/{id} {newstate} {username}
-		PUT documents/{id list} {newstate} {username}
+		GET documents?query ( should contain at least {username}),
+		GET documents/{id} {username},
+		PUT documents/{id} {newstate} {username},
+		PUT documents/{id list} {newstate} {username},
 		GET users
  - I verified and solved the warnings only in API
 
 ### The web app
  - Lists documents and updates document states (approve or reject).
  - When a document is approved, it must call some "forward to e-mail method" - it is done by calling a mock EmailService.SendApprovedDocumentsEmail in WebApp.Server
- - it is also structured as controller-> service/s and uses dependency injection. The Http calls are dane by dedicated services.
+ - it is also structured as controller-> service/s and uses dependency injection. The Http calls are done by dedicated services.
  - the code for the Web Client is somewhat clumsy and cluttered and i'm sure it can be done and structured much better.
  - Graphical design was not the focus, but it was time consuming :)
 
