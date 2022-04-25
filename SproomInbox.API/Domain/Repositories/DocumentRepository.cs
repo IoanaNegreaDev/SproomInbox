@@ -20,10 +20,10 @@ namespace SproomInbox.API.Domain.Repositories
         }
         public async Task<PagedList<Document>> ListAsync()
         {
-            PagedListMetadata defaultPagingMetadata = new PagedListMetadata();
+            DocumentsQueryParameters defaultPagingMetadata = new DocumentsQueryParameters();
             var collection = _table as IQueryable<Document>;
             collection = collection.Include(document => document.StateHistory);
-            return await ApplyPaginationAsync(defaultPagingMetadata, collection);
+            return await ApplyPaginationAsync(defaultPagingMetadata.CurrentPage, defaultPagingMetadata.PageSize, collection);
         }
         public async Task<PagedList<Document>> ListAsync(DocumentsQueryParameters queryParameters)
         {
@@ -35,7 +35,7 @@ namespace SproomInbox.API.Domain.Repositories
             collection = ApplySearch(queryParameters.Search, collection);
             collection = collection.Include(document => document.StateHistory);
 
-            return await ApplyPaginationAsync(queryParameters.Page, collection);
+            return await ApplyPaginationAsync(queryParameters.CurrentPage, queryParameters.PageSize, collection);
         }
 
         private IQueryable<Document> ApplyFilter(DocumentsQueryParameters queryParameters, 
@@ -86,12 +86,12 @@ namespace SproomInbox.API.Domain.Repositories
             return collection;
         }
 
-        private async Task<PagedList<Document>> ApplyPaginationAsync(PagedListMetadata pagedMetadata,
-                                              IQueryable<Document> collection)
+        private async Task<PagedList<Document>> ApplyPaginationAsync(int currentPageNumber, int pageSize, IQueryable<Document> collection)
         {
-            if (pagedMetadata == null)
-                pagedMetadata = new PagedListMetadata();
+            var pagedMetadata = new PagedListMetadata();
 
+            pagedMetadata.Current = currentPageNumber;
+            pagedMetadata.Size = pageSize;
             pagedMetadata.TotalCount = collection.Count();
             pagedMetadata.TotalPages = (int)Math.Ceiling(pagedMetadata.TotalCount / (double)pagedMetadata.Size);
 

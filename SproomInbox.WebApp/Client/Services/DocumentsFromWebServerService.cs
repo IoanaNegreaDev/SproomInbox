@@ -25,7 +25,7 @@ namespace SproomInbox.WebApp.Client.Services
             queryPairs.Add("username", queryParameters.UserName);
             queryPairs.Add("type", queryParameters.Type);
             queryPairs.Add("state", queryParameters.State);
-            queryPairs.Add("currentPage", queryParameters.Page.Current.ToString());
+            queryPairs.Add("currentPage", queryParameters.CurrentPage.ToString());
 
             string query = string.Empty;
             if (queryPairs.Count > 0)

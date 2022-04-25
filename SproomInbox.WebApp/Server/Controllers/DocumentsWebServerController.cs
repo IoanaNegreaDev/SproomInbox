@@ -32,7 +32,7 @@ namespace SproomInbox.WebApp.Server.Controllers
                 UserName = userName,
                 Type = type,
                 State = state,
-                Page = new PagedListMetadata() { Current = current }
+                CurrentPage = current,
             };
 
             var response = await _documentService.FetchDocumentsAsync(queryParameters);

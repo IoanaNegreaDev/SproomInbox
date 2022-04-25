@@ -52,8 +52,8 @@ namespace SproomInbox.API.Utils.Paging
                     return urlHelper.Link(routeName,
                         new
                         {
-                            pageNumber = queryParameters.Page.Current - 1,
-                            pageSize = queryParameters.Page.Size,
+                            pageNumber = queryParameters.CurrentPage - 1,
+                            pageSize = queryParameters.PageSize,
                             searchQuery = queryParameters.Search
                          //  fields = queryParameters.Fields
                         });
@@ -61,8 +61,8 @@ namespace SproomInbox.API.Utils.Paging
                     return urlHelper.Link(routeName,
                         new
                         {                           
-                            pageNumber = queryParameters.Page.Current + 1,
-                            pageSize = queryParameters.Page.Size,                         
+                            pageNumber = queryParameters.CurrentPage + 1,
+                            pageSize = queryParameters.PageSize,                         
                             searchQuery = queryParameters.Search
                         //    fields = queryParameters.Fields
                         });
@@ -71,8 +71,8 @@ namespace SproomInbox.API.Utils.Paging
                     return urlHelper.Link(routeName,
                         new
                         {                           
-                            pageNumber = queryParameters.Page.Current,
-                            pageSize = queryParameters.Page.Size,                          
+                            pageNumber = queryParameters.CurrentPage,
+                            pageSize = queryParameters.PageSize,                          
                             searchQuery = queryParameters.Search,
                        //     fields = queryParameters.Fields
                         });

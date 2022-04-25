@@ -29,10 +29,10 @@ namespace RentalAPI.ValidationFilters
                                           .WithMessage("Invalid Document Type value. Please use: " +
                                                        String.Join(", ", Enum.GetNames<DocumentType>()) + ".");
 
-            RuleFor(param => param.Page.Current).GreaterThan(0)
+            RuleFor(param => param.CurrentPage).GreaterThan(0)
                                                       .WithMessage("Current page must be grater than 0.");
 
-            RuleFor(param => param.Page.Size).GreaterThan(0)
+            RuleFor(param => param.PageSize).GreaterThan(0)
                                                    .LessThanOrEqualTo(30);
         }
     }

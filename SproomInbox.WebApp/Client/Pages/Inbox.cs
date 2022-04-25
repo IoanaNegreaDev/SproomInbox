@@ -122,7 +122,7 @@ namespace SproomInbox.WebApp.Client.Pages
 
         private async Task SelectedPage(int page)
         {
-            FilterParameters.Page.Current = page;
+            FilterParameters.CurrentPage = page;
             await RefreshInbox();
         }
      
