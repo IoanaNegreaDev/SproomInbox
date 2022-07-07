@@ -1,4 +1,4 @@
-﻿using SproomInbox.WebApp.Shared.Pagination;
+﻿using SproomInbox.API.Utils.Pagination;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -16,7 +16,7 @@ namespace SproomInbox.API.Test.Utils
         public void Create_ValidInput_Returns_PageList()
         {
            var testList =new List<MockEntity>()
-            {
+           {
                 new MockEntity() { Id = 1 },
                 new MockEntity() { Id = 2 },
                 new MockEntity() { Id = 3 },
@@ -84,8 +84,8 @@ namespace SproomInbox.API.Test.Utils
             {          
             }.AsQueryable(); 
 
-            PagedListMetadata pagedListDataTest = new PagedListMetadata() { Current = 0, Size = 2 };
-            var returnedPagedList =  PagedList<MockEntity>.Create(null, pagedListDataTest);
+            PagedListMetadata pagedListDataTest = new PagedListMetadata() { Current = 0, Size = 2 }; 
+             var returnedPagedList =  PagedList<MockEntity>.Create(null, pagedListDataTest);
             Assert.NotNull(returnedPagedList);
       
             pagedListDataTest = new PagedListMetadata() { Current = 4, Size = 6 };

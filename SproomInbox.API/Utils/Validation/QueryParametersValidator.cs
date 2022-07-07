@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using SproomInbox.API.Domain.Models;
-using SproomInbox.WebApp.Shared.Resources.Parametrization;
+using SproomInbox.API.Parametrization;
 
 namespace RentalAPI.ValidationFilters
 {

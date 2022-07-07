@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Marvin.Cache.Headers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.WebApp.Shared.Resources;
 
+
 namespace SproomInbox.API.Controllers
 {
+  // [Authorize]
     [Produces("application/json")]
     [ApiController]
     [Route("api/v1.0/users")]

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SproomInbox.API.Utils.Paging;
-using SproomInbox.WebApp.Shared.Pagination;
+using SproomInbox.API.Utils.Pagination;
+
 
 namespace SproomInbox.API.Utils.DtoMapper
 {
