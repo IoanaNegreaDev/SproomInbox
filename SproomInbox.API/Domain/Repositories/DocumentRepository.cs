@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SproomInbox.API.Domain.Models;
-using SproomInbox.WebApp.Shared.Pagination;
-using SproomInbox.WebApp.Shared.Resources.Parametrization;
+using SproomInbox.API.Parametrization;
+using SproomInbox.API.Utils.Pagination;
 
 namespace SproomInbox.API.Domain.Repositories
 {

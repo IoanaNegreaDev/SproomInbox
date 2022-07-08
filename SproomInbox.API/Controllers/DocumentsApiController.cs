@@ -1,12 +1,11 @@
 using AutoMapper;
-using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Services;
-using SproomInbox.API.Utils.Paging;
+using SproomInbox.API.Parametrization;
+using SproomInbox.API.Utils.Pagination;
 using SproomInbox.API.Utils.Validation;
-using SproomInbox.WebApp.Shared.Pagination;
 using SproomInbox.WebApp.Shared.Resources;
 using SproomInbox.WebApp.Shared.Resources.Parametrization;
 using System.Text;

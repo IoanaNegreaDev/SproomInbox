@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SproomInbox.API\SproomInbox.API.csproj" />
-    <ProjectReference Include="..\SproomInbox.WebApp\Shared\SproomInbox.WebApp.Shared.csproj" />
   </ItemGroup>
 
 </Project>

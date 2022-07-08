@@ -1,5 +1,6 @@
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SproomInbox.API.Domain;
@@ -7,7 +8,7 @@ using SproomInbox.API.Domain.Repositories;
 using SproomInbox.API.Domain.Services;
 using SproomInbox.API.Utils.DtoMapper;
 using SproomInbox.API.Utils.ErrorHandling;
-using SproomInbox.API.Utils.Paging;
+using SproomInbox.API.Utils.Pagination;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,7 @@ builder.Services.AddControllers()
                     options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                 });
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -81,6 +83,7 @@ if (app.Environment.IsDevelopment())
     SeedData(app);
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseStaticFiles();

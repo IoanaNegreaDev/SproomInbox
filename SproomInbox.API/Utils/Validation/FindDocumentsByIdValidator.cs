@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SproomInbox.WebApp.Shared.Resources.Parametrization;
+using SproomInbox.API.Parametrization;
 
 namespace SproomInbox.API.Utils.Validation
 {

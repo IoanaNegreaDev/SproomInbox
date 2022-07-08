@@ -2,7 +2,7 @@
 using SproomInbox.API.Domain;
 using SproomInbox.API.Domain.Models;
 using SproomInbox.API.Domain.Repositories;
-using SproomInbox.WebApp.Shared.Resources.Parametrization;
+using SproomInbox.API.Parametrization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
