@@ -9,7 +9,7 @@ namespace SproomInbox.API.Test.Utils
     {
         public int Id;
     }
-    // TO DO split the tests for a better locatization of errors + ADD PagedListMetadata tests
+    // TO DO split the tests for a better localization of errors + ADD PagedListMetadata tests
     public class PageListFacts
     {
         [Fact]
